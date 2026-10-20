@@ -2,8 +2,8 @@ PROJETO: Simples QR
 PROJETO INTEGRADOR: Simples QR — Cardápio digital por QR code
 
 1. LINKS OFICIAIS:
-- Repositório GitHub: preencher com o link real após scripts/publicar.ps1
-- Quadro GitHub Projects: preencher com o link real após scripts/publicar.ps1
+- Repositório GitHub: https://github.com/MiguelWainst/simples-qr-mobile
+- Quadro GitHub Projects: https://github.com/users/MiguelWainst/projects/1
 
 2. INTEGRANTES E PAPÉIS TÉCNICOS:
 - Miguel Wainstein (@MiguelWainst) — Tech Lead/Arquiteto, UI/UX e Design System, Dados e Persistência Local, Backend/APIs, QA e Governança de IA. Projeto individual.
@@ -16,4 +16,4 @@ O proprietário terá uma área autenticada para manter dados do restaurante, ca
 Supabase.
 Justificativa: autenticação, PostgreSQL e API REST gerenciados reduzem o esforço operacional do projeto individual. Políticas RLS limitarão a edição ao proprietário e a consulta pública aos cardápios publicados. SQLite será implementado explicitamente para dados locais e consulta offline.
 
-ANTES DE ENVIAR: substituir os dois links, executar a validação e informar honestamente se o projeto Supabase ainda não estiver criado.
+Observação da Sprint 0: base Flutter com análise sem problemas, 2 testes aprovados e build web concluído. O projeto Supabase ainda precisa ser provisionado; a escolha do backend e a migração SQL com RLS estão documentadas. Conferir a visibilidade e os cartões do quadro antes do envio.
