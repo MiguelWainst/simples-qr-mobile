@@ -1,0 +1,407 @@
+[
+  {
+    "id": "C1.1",
+    "title": "[C1.1] Identidade visual e tokens centralizados",
+    "category": "C1",
+    "level": "obrigatório",
+    "sprint": 3,
+    "status": "Backlog",
+    "body": "## Requisito\nC1.1 — Identidade visual e tokens centralizados\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C1.2",
+    "title": "[C1.2] Temas Claro/Escuro/Sistema persistidos",
+    "category": "C1",
+    "level": "obrigatório",
+    "sprint": 3,
+    "status": "Backlog",
+    "body": "## Requisito\nC1.2 — Temas Claro/Escuro/Sistema persistidos\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C1.3",
+    "title": "[C1.3] Biblioteca de pelo menos dez componentes próprios",
+    "category": "C1",
+    "level": "obrigatório",
+    "sprint": 3,
+    "status": "Backlog",
+    "body": "## Requisito\nC1.3 — Biblioteca de pelo menos dez componentes próprios\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C1.4",
+    "title": "[C1.4] Responsividade 360x640, paisagem e teclado",
+    "category": "C1",
+    "level": "obrigatório",
+    "sprint": 3,
+    "status": "Backlog",
+    "body": "## Requisito\nC1.4 — Responsividade 360x640, paisagem e teclado\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C1.5",
+    "title": "[C1.5] Acessibilidade e fonte ampliada",
+    "category": "C1",
+    "level": "obrigatório",
+    "sprint": 3,
+    "status": "Backlog",
+    "body": "## Requisito\nC1.5 — Acessibilidade e fonte ampliada\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C1.6",
+    "title": "[C1.6] Feedback de ações e estados vazios",
+    "category": "C1",
+    "level": "obrigatório",
+    "sprint": 3,
+    "status": "Backlog",
+    "body": "## Requisito\nC1.6 — Feedback de ações e estados vazios\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C2.1",
+    "title": "[C2.1] Entregar no mínimo dez telas funcionais",
+    "category": "C2",
+    "level": "obrigatório",
+    "sprint": 1,
+    "status": "Backlog",
+    "body": "## Requisito\nC2.1 — Entregar no mínimo dez telas funcionais\n\n## Aplicação no Simples QR\nConsulta pública do cardápio; área do proprietário autenticada; dados de um restaurante isolados de outro.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C2.2",
+    "title": "[C2.2] Rotas centralizadas e retorno de resultados",
+    "category": "C2",
+    "level": "obrigatório",
+    "sprint": 1,
+    "status": "Backlog",
+    "body": "## Requisito\nC2.2 — Rotas centralizadas e retorno de resultados\n\n## Aplicação no Simples QR\nConsulta pública do cardápio; área do proprietário autenticada; dados de um restaurante isolados de outro.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C2.3",
+    "title": "[C2.3] Parâmetros tipados entre telas",
+    "category": "C2",
+    "level": "obrigatório",
+    "sprint": 1,
+    "status": "Backlog",
+    "body": "## Requisito\nC2.3 — Parâmetros tipados entre telas\n\n## Aplicação no Simples QR\nConsulta pública do cardápio; área do proprietário autenticada; dados de um restaurante isolados de outro.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C2.4",
+    "title": "[C2.4] Auth real: cadastro, login, recuperação, sessão e logout",
+    "category": "C2",
+    "level": "obrigatório",
+    "sprint": 1,
+    "status": "Backlog",
+    "body": "## Requisito\nC2.4 — Auth real: cadastro, login, recuperação, sessão e logout\n\n## Aplicação no Simples QR\nConsulta pública do cardápio; área do proprietário autenticada; dados de um restaurante isolados de outro.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C2.5",
+    "title": "[C2.5] Guardas e autorização no backend por proprietário",
+    "category": "C2",
+    "level": "obrigatório",
+    "sprint": 1,
+    "status": "Backlog",
+    "body": "## Requisito\nC2.5 — Guardas e autorização no backend por proprietário\n\n## Aplicação no Simples QR\nConsulta pública do cardápio; área do proprietário autenticada; dados de um restaurante isolados de outro.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C2.6",
+    "title": "[C2.6] Liberar controllers e verificar mounted",
+    "category": "C2",
+    "level": "obrigatório",
+    "sprint": 1,
+    "status": "Backlog",
+    "body": "## Requisito\nC2.6 — Liberar controllers e verificar mounted\n\n## Aplicação no Simples QR\nConsulta pública do cardápio; área do proprietário autenticada; dados de um restaurante isolados de outro.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C2.7",
+    "title": "[C2.7] PopScope e confirmação de alterações não salvas",
+    "category": "C2",
+    "level": "obrigatório",
+    "sprint": 1,
+    "status": "Backlog",
+    "body": "## Requisito\nC2.7 — PopScope e confirmação de alterações não salvas\n\n## Aplicação no Simples QR\nConsulta pública do cardápio; área do proprietário autenticada; dados de um restaurante isolados de outro.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C2.8",
+    "title": "[C2.8] Validação dos formulários e regras de negócio",
+    "category": "C2",
+    "level": "obrigatório",
+    "sprint": 1,
+    "status": "Backlog",
+    "body": "## Requisito\nC2.8 — Validação dos formulários e regras de negócio\n\n## Aplicação no Simples QR\nConsulta pública do cardápio; área do proprietário autenticada; dados de um restaurante isolados de outro.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C2.9",
+    "title": "[C2.9] ViewModels sem regra de negócio nas Views",
+    "category": "C2",
+    "level": "obrigatório",
+    "sprint": 1,
+    "status": "Backlog",
+    "body": "## Requisito\nC2.9 — ViewModels sem regra de negócio nas Views\n\n## Aplicação no Simples QR\nConsulta pública do cardápio; área do proprietário autenticada; dados de um restaurante isolados de outro.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C3.1",
+    "title": "[C3.1] Lazy loading nas coleções",
+    "category": "C3",
+    "level": "obrigatório",
+    "sprint": 2,
+    "status": "Backlog",
+    "body": "## Requisito\nC3.1 — Lazy loading nas coleções\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C3.2",
+    "title": "[C3.2] Eliminar renderização eager de coleções variáveis",
+    "category": "C3",
+    "level": "obrigatório",
+    "sprint": 2,
+    "status": "Backlog",
+    "body": "## Requisito\nC3.2 — Eliminar renderização eager de coleções variáveis\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C3.3",
+    "title": "[C3.3] Paginar catálogos remotos",
+    "category": "C3",
+    "level": "obrigatório",
+    "sprint": 2,
+    "status": "Backlog",
+    "body": "## Requisito\nC3.3 — Paginar catálogos remotos\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C3.4",
+    "title": "[C3.4] Busca com debounce e filtros por categoria",
+    "category": "C3",
+    "level": "obrigatório",
+    "sprint": 2,
+    "status": "Backlog",
+    "body": "## Requisito\nC3.4 — Busca com debounce e filtros por categoria\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C4.1",
+    "title": "[C4.1] CRUD SQLite de favoritos e catálogos salvos",
+    "category": "C4",
+    "level": "obrigatório",
+    "sprint": 1,
+    "status": "Backlog",
+    "body": "## Requisito\nC4.1 — CRUD SQLite de favoritos e catálogos salvos\n\n## Aplicação no Simples QR\nCatálogos consultados e favoritos disponíveis no dispositivo. Edição administrativa depende de conexão.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C4.2",
+    "title": "[C4.2] DatabaseHelper Singleton e migrações",
+    "category": "C4",
+    "level": "obrigatório",
+    "sprint": 1,
+    "status": "Backlog",
+    "body": "## Requisito\nC4.2 — DatabaseHelper Singleton e migrações\n\n## Aplicação no Simples QR\nCatálogos consultados e favoritos disponíveis no dispositivo. Edição administrativa depende de conexão.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C4.3",
+    "title": "[C4.3] DTOs tipados com toMap/fromMap/toJson/fromJson",
+    "category": "C4",
+    "level": "obrigatório",
+    "sprint": 1,
+    "status": "Backlog",
+    "body": "## Requisito\nC4.3 — DTOs tipados com toMap/fromMap/toJson/fromJson\n\n## Aplicação no Simples QR\nCatálogos consultados e favoritos disponíveis no dispositivo. Edição administrativa depende de conexão.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C4.4",
+    "title": "[C4.4] Consulta offline e indicação de última sincronização",
+    "category": "C4",
+    "level": "obrigatório",
+    "sprint": 1,
+    "status": "Backlog",
+    "body": "## Requisito\nC4.4 — Consulta offline e indicação de última sincronização\n\n## Aplicação no Simples QR\nCatálogos consultados e favoritos disponíveis no dispositivo. Edição administrativa depende de conexão.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C4.5",
+    "title": "[C4.5] Preferências persistidas e tokens seguros",
+    "category": "C4",
+    "level": "obrigatório",
+    "sprint": 1,
+    "status": "Backlog",
+    "body": "## Requisito\nC4.5 — Preferências persistidas e tokens seguros\n\n## Aplicação no Simples QR\nCatálogos consultados e favoritos disponíveis no dispositivo. Edição administrativa depende de conexão.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C4.6",
+    "title": "[C4.6] Confirmação e desfazer de exclusões",
+    "category": "C4",
+    "level": "obrigatório",
+    "sprint": 1,
+    "status": "Backlog",
+    "body": "## Requisito\nC4.6 — Confirmação e desfazer de exclusões\n\n## Aplicação no Simples QR\nCatálogos consultados e favoritos disponíveis no dispositivo. Edição administrativa depende de conexão.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C5.1",
+    "title": "[C5.1] Provisionar Supabase e dados compartilhados reais",
+    "category": "C5",
+    "level": "obrigatório",
+    "sprint": 2,
+    "status": "Backlog",
+    "body": "## Requisito\nC5.1 — Provisionar Supabase e dados compartilhados reais\n\n## Aplicação no Simples QR\nSupabase Auth, PostgreSQL/PostgREST e RLS para restaurantes, categorias e produtos.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C5.2",
+    "title": "[C5.2] Consumir catálogo pela API REST JSON",
+    "category": "C5",
+    "level": "obrigatório",
+    "sprint": 2,
+    "status": "Backlog",
+    "body": "## Requisito\nC5.2 — Consumir catálogo pela API REST JSON\n\n## Aplicação no Simples QR\nSupabase Auth, PostgreSQL/PostgREST e RLS para restaurantes, categorias e produtos.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C5.3",
+    "title": "[C5.3] Estados carregando, erro, sucesso e vazio",
+    "category": "C5",
+    "level": "obrigatório",
+    "sprint": 2,
+    "status": "Backlog",
+    "body": "## Requisito\nC5.3 — Estados carregando, erro, sucesso e vazio\n\n## Aplicação no Simples QR\nSupabase Auth, PostgreSQL/PostgREST e RLS para restaurantes, categorias e produtos.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C5.4",
+    "title": "[C5.4] Tratar timeout, rede, HTTP, permissão e JSON inválido",
+    "category": "C5",
+    "level": "obrigatório",
+    "sprint": 2,
+    "status": "Backlog",
+    "body": "## Requisito\nC5.4 — Tratar timeout, rede, HTTP, permissão e JSON inválido\n\n## Aplicação no Simples QR\nSupabase Auth, PostgreSQL/PostgREST e RLS para restaurantes, categorias e produtos.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C5.5",
+    "title": "[C5.5] RLS por proprietário e nenhum segredo versionado",
+    "category": "C5",
+    "level": "obrigatório",
+    "sprint": 2,
+    "status": "Backlog",
+    "body": "## Requisito\nC5.5 — RLS por proprietário e nenhum segredo versionado\n\n## Aplicação no Simples QR\nSupabase Auth, PostgreSQL/PostgREST e RLS para restaurantes, categorias e produtos.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C5.6",
+    "title": "[C5.6] Isolar SDK/HTTP em serviços e repositórios",
+    "category": "C5",
+    "level": "obrigatório",
+    "sprint": 2,
+    "status": "Backlog",
+    "body": "## Requisito\nC5.6 — Isolar SDK/HTTP em serviços e repositórios\n\n## Aplicação no Simples QR\nSupabase Auth, PostgreSQL/PostgREST e RLS para restaurantes, categorias e produtos.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C6.1",
+    "title": "[C6.1] Documentar e manter arquitetura MVVM",
+    "category": "C6",
+    "level": "obrigatório",
+    "sprint": 3,
+    "status": "Backlog",
+    "body": "## Requisito\nC6.1 — Documentar e manter arquitetura MVVM\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C6.2",
+    "title": "[C6.2] Flutter analyze limpo e Clean Code",
+    "category": "C6",
+    "level": "obrigatório",
+    "sprint": 3,
+    "status": "Backlog",
+    "body": "## Requisito\nC6.2 — Flutter analyze limpo e Clean Code\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C6.3",
+    "title": "[C6.3] Testar DTOs, validação, regras e fluxos principais",
+    "category": "C6",
+    "level": "obrigatório",
+    "sprint": 3,
+    "status": "Backlog",
+    "body": "## Requisito\nC6.3 — Testar DTOs, validação, regras e fluxos principais\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C6.4",
+    "title": "[C6.4] Governança com duas refatorações manuais reais",
+    "category": "C6",
+    "level": "obrigatório",
+    "sprint": 3,
+    "status": "Backlog",
+    "body": "## Requisito\nC6.4 — Governança com duas refatorações manuais reais\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C6.5",
+    "title": "[C6.5] Branches, PRs e alinhar revisão do projeto individual",
+    "category": "C6",
+    "level": "obrigatório",
+    "sprint": 3,
+    "status": "Backlog",
+    "body": "## Requisito\nC6.5 — Branches, PRs e alinhar revisão do projeto individual\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C6.6",
+    "title": "[C6.6] Manter quadro e marcos por sprint",
+    "category": "C6",
+    "level": "obrigatório",
+    "sprint": 3,
+    "status": "Backlog",
+    "body": "## Requisito\nC6.6 — Manter quadro e marcos por sprint\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "C6.7",
+    "title": "[C6.7] README com matriz, execução, imagens e evidências",
+    "category": "C6",
+    "level": "obrigatório",
+    "sprint": 3,
+    "status": "Backlog",
+    "body": "## Requisito\nC6.7 — README com matriz, execução, imagens e evidências\n\n## Aplicação no Simples QR\nAplicar ao cardápio digital e à área de gerenciamento do proprietário.\n\n## Critérios de aceite\nA implementação atende ao requisito do enunciado e funciona de ponta a ponta. Validar os cenários de sucesso, erro e dados ausentes aplicáveis. Registrar evidência e arquivos afetados no PR. Não marcar como Done apenas por existir documentação.\n\n## Responsável\nMiguel Wainstein (@MiguelWainst)."
+  },
+  {
+    "id": "S0-base",
+    "title": "[Sprint 0] Validar base MVVM, temas e tela inicial",
+    "category": "C6",
+    "level": "obrigatório",
+    "sprint": 0,
+    "status": "Review",
+    "body": "Base e testes gerados. Executar flutter analyze, flutter test e flutter build web; revisar pessoalmente o código. Só concluir após evidência real."
+  },
+  {
+    "id": "S0-backend",
+    "title": "[Sprint 0] Criar projeto Supabase e aplicar RLS inicial",
+    "category": "C5",
+    "level": "obrigatório",
+    "sprint": 0,
+    "status": "To Do",
+    "body": "Criar projeto Supabase, aplicar supabase/migrations/001_initial.sql e comprovar tabelas e RLS ativos. Não incluir senha nem chave service_role no repositório."
+  },
+  {
+    "id": "S0-entrega",
+    "title": "[Sprint 0] Conferir links, papéis e enviar no AVA",
+    "category": "C6",
+    "level": "obrigatório",
+    "sprint": 0,
+    "status": "To Do",
+    "body": "Conferir visibilidade pública, quadro com cinco status e marcos 0–3, issues atribuídas, validar app e preencher docs/AVA.md. Alinhar revisão por pares com professor devido à equipe individual."
+  },
+  {
+    "id": "QR",
+    "title": "[C5.8] Ler QR code e abrir cardápio identificado",
+    "category": "C5",
+    "level": "opcional",
+    "sprint": 2,
+    "status": "Backlog",
+    "body": "Implementar leitura via câmera e abertura do cardápio pelo identificador. Validar código inválido, permissão negada e restaurante inexistente. Recurso opcional na rubrica, essencial ao produto."
+  },
+  {
+    "id": "CATALOGO",
+    "title": "[Funcionalidade] CRUD de restaurante, categorias e produtos",
+    "category": "C2",
+    "level": "obrigatório",
+    "sprint": 1,
+    "status": "Backlog",
+    "body": "Proprietário cadastra restaurante, categorias e produtos com preço em centavos, ingredientes e disponibilidade. Impedir categoria de outro restaurante e mudanças sem autorização. Catálogo público somente após publicação."
+  },
+  {
+    "id": "FAVORITOS",
+    "title": "[Funcionalidade] Favoritos e consulta de cardápios offline",
+    "category": "C4",
+    "level": "obrigatório",
+    "sprint": 2,
+    "status": "Backlog",
+    "body": "Salvar e remover favoritos com CRUD local, cache do último cardápio e indicação de desatualização. Reabrir o app em modo avião e validar persistência."
+  },
+  {
+    "id": "CI",
+    "title": "[C6.9] CI com analyze, testes e build",
+    "category": "C6",
+    "level": "desejável",
+    "sprint": 0,
+    "status": "Review",
+    "body": "Workflow incluído. Confirmar execução verde no GitHub; corrigir falhas reais antes de marcar Done."
+  }
+]
