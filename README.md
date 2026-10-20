@@ -84,12 +84,18 @@ flutter test
 flutter build web
 ```
 
-Formatação e análise estática via Dart Analysis Server concluídas sem diagnósticos. O ambiente bloqueou subprocessos do Flutter, impedindo executar testes e build. Consulte `docs/VALIDACAO.md`. Testes escritos não devem ser confundidos com testes executados.
+Validação executada no computador do autor em 19/10/2026: `flutter analyze` sem problemas, `flutter test` com 2 testes aprovados e `flutter build web` concluído. Evidência: saída do terminal fornecida pelo autor. Execução visual e build Android ainda não verificados. Consulte `docs/VALIDACAO.md`.
 
 ## Planejamento e publicação
 
-`docs/issues.json` é a fonte do backlog, com todos os requisitos obrigatórios C1–C6. `scripts/publicar.ps1` cria o repositório, marcos, labels, issues atribuídas ao autor e GitHub Project com os cinco status. Execute uma vez e consulte a saída para os links reais. O script é retomável para repositório/issues/milestones, e reutiliza o quadro salvo em `.publication.json`.
+`docs/issues.json` é a fonte do backlog. As 45 issues foram criadas, categorizadas por C1–C6, atribuídas a @MiguelWainst e associadas aos marcos das Sprints 0 a 3. O script de publicação apresentou incompatibilidades com Windows PowerShell 5; não é necessário executá-lo novamente para usar o app.
 
-Links do quadro e repositório serão gravados em `docs/LINKS.md` após publicação. APK, vídeo, capturas e protótipo serão adicionados quando existirem; não há links fictícios.
+Repositório: https://github.com/MiguelWainst/simples-qr-mobile
+
+Quadro: https://github.com/users/MiguelWainst/projects/1
+
+Issues: https://github.com/MiguelWainst/simples-qr-mobile/issues
+
+APK, vídeo, capturas e protótipo serão adicionados quando existirem.
 
 Governança: [PROMPT_LOG.md](PROMPT_LOG.md). Matriz de requisitos: [docs/REQUISITOS.md](docs/REQUISITOS.md).
