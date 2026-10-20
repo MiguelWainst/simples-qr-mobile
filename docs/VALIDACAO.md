@@ -1,9 +1,15 @@
-# Validação e pendências
+# Validação da Sprint 0
 
-Código formatado com o Dart 3.13.5 disponível no ambiente. Análise estática concluída pelo Dart Analysis Server do SDK local: todos os nove arquivos lib/ e o arquivo de testes retornaram lista vazia de diagnósticos. A sintaxe do script PowerShell também passou pelo parser. Os testes foram escritos para verificar persistência do tema e navegação em 360x640 com fonte 1.3x.
+Em 19/10/2026, o autor executou no Windows e forneceu a saída do terminal:
 
-O Flutter local falhou antes de criar/executar o projeto por restrição de subprocessos (`CreateFile failed 5`, falha ao executar git). Acesso HTTPS externo pelo terminal falhou por indisponibilidade do proxy. Navegador integrado retornou erro de sessão, e o controle local retornou `failed to launch codex app-server: program not found`.
+- `dart format lib test`: 10 arquivos, nenhuma alteração.
+- `flutter analyze`: No issues found.
+- `flutter test`: 2 testes aprovados.
+- `flutter build web`: Built build/web.
+- `git push -u origin main`: publicação do commit 47bac38 confirmada.
 
-Os scaffolds Android e web foram gerados a partir dos templates oficiais presentes no SDK e as dependências foram resolvidas pelo cache local. **Não há comprovação de build, execução visual nem aprovação dos testes**. O workflow de CI e o script de publicação executam essas verificações em ambiente funcional. Não marcar essa parte como concluída antes do resultado.
+O build registrou aviso sobre fonte Cupertino e sugestões de versões de dependências, sem impedir a compilação. Execução visual e build Android ainda não verificados. A análise estática anterior no ambiente do assistente também não registrou diagnósticos.
 
-Pendências externas: criar repositório/quadro executando scripts/publicar.ps1, provisionar Supabase e aplicar a migração, obter links e enviar a postagem no AVA. Nenhuma publicação é presumida pelo pacote local.
+Foram criadas 45 issues com assignee MiguelWainst, labels C1–C6 e milestones correspondentes às Sprints 0–3. Quadro: https://github.com/users/MiguelWainst/projects/1 . A inclusão dos cartões e a visibilidade do quadro ainda precisam ser conferidas.
+
+Pendências: provisionar o projeto Supabase, aplicar supabase/migrations/001_initial.sql e conferir RLS; conferir cartões no quadro; enviar a postagem no AVA. Não se afirma backend remoto funcional ou entrega enviada antes dessas etapas.
