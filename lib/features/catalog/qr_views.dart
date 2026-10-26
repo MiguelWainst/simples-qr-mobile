@@ -12,11 +12,26 @@ class ScannerView extends StatefulWidget {
   @override
   State<ScannerView> createState() => _ScannerViewState();
 }
-class _ScannerViewState extends State<ScannerView> {
+class _ScannerViewState extends State<ScannerView> with WidgetsBindingObserver {
   final _controller = MobileScannerController(formats: [BarcodeFormat.qrCode]);
   bool _opened = false;
   @override
-  void dispose() { _controller.dispose(); super.dispose(); }
+  void initState() { super.initState(); WidgetsBinding.instance.addObserver(this); }
+  Future<void> _camera(bool start) async {
+    try {
+      if (start) { await _controller.start(); } else { await _controller.stop(); }
+    } catch (_) { /* The scanner widget displays camera permission errors. */ }
+  }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && !_opened) {
+      _camera(true);
+    } else if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+      _camera(false);
+    }
+  }
+  @override
+  void dispose() { WidgetsBinding.instance.removeObserver(this); _controller.dispose(); super.dispose(); }
   void _detect(BarcodeCapture capture) {
     if (_opened) { return; }
     for (final barcode in capture.barcodes) {

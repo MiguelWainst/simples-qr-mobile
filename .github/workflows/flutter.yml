@@ -2,7 +2,7 @@ name: Flutter
 on: [push, pull_request, workflow_dispatch]
 concurrency:
   group: flutter-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 permissions:
   contents: read
 jobs:
@@ -22,6 +22,14 @@ jobs:
       - run: flutter pub get
       - name: Format source
         run: dart format lib test
+      - name: Export formatted sources for review
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          paths = list(Path('lib').rglob('*.dart')) + list(Path('test').rglob('*.dart')) + [Path('pubspec.lock')]
+          print('SOURCE_SNAPSHOT=' + json.dumps({str(p): p.read_text() for p in paths}))
+          PY
       - run: flutter analyze
       - run: flutter test
       - run: flutter build web

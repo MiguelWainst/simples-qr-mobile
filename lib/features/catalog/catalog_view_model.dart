@@ -54,7 +54,7 @@ class CatalogViewModel extends ChangeNotifier {
     } catch (e) {
       if (_disposed || generation != _generation) { return; }
       if (e is FormatException) {
-        await cache.remove(slug);
+        try { await cache.remove(slug); } catch (_) { cacheWarning = 'Não foi possível limpar a cópia local.'; }
         products = []; restaurant = null;
         error = friendlyError(e);
       } else if (!next) {
