@@ -22,7 +22,7 @@ class _SimplesQrAppState extends State<SimplesQrApp> {
     _subscription = widget.services?.client?.auth.onAuthStateChange.listen((event) {
       if (event.event == AuthChangeEvent.passwordRecovery) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) _navigator.currentState?.pushNamed('/password');
+          if (mounted) { _navigator.currentState?.pushNamed('/password'); }
         });
       }
     });

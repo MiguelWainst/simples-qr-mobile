@@ -55,15 +55,15 @@ abstract final class Rules {
       ? null : 'Use letras minúsculas, números e hífens.';
   static int? cents(String value) {
     final normalized = value.trim().replaceAll(',', '.');
-    if (!RegExp(r'^\d{1,7}(\.\d{1,2})?$').hasMatch(normalized)) return null;
+    if (!RegExp(r'^\d{1,7}(\.\d{1,2})?$').hasMatch(normalized)) { return null; }
     final parts = normalized.split('.');
     return int.parse(parts[0]) * 100 + (parts.length == 1 ? 0 : int.parse(parts[1].padRight(2, '0')));
   }
   static String? menuCode(String input) {
     final value = input.trim();
-    if (slug(value) == null) return value;
+    if (slug(value) == null) { return value; }
     final uri = Uri.tryParse(value);
-    if (uri == null || !['https', 'http', 'simplesqr'].contains(uri.scheme)) return null;
+    if (uri == null || !['https', 'http', 'simplesqr'].contains(uri.scheme)) { return null; }
     final fragment = Uri.tryParse(uri.fragment);
     final candidate = uri.queryParameters['menu'] ?? fragment?.queryParameters['menu'];
     return candidate != null && slug(candidate) == null ? candidate : null;

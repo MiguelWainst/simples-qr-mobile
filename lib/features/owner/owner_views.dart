@@ -27,14 +27,14 @@ class _OwnerListViewState extends State<OwnerListView> {
     await Navigator.pushNamed(context, '/edit', arguments: EditorArgs(widget.table,
       restaurant: item is Restaurant ? item : widget.restaurant,
       category: item is Category ? item : null, product: item is Product ? item : null));
-    if (mounted) await _model.load();
+    if (mounted) { await _model.load(); }
   }
   Future<void> _logout() async {
     try {
       await widget.services.client!.auth.signOut(scope: SignOutScope.local);
-      if (mounted) Navigator.popUntil(context, (route) => route.isFirst);
+      if (mounted) { Navigator.popUntil(context, (route) => route.isFirst); }
     } catch(e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(friendlyError(e))));
+      if (mounted) { ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(friendlyError(e)))); }
     }
   }
   @override
@@ -49,18 +49,18 @@ class _OwnerListViewState extends State<OwnerListView> {
       body: ContentWidth(child: RefreshIndicator(onRefresh: () => _model.load(), child: ListView.builder(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 100), itemCount: _model.items.length + 2,
         itemBuilder: (context, index) {
-          if (index == 0) return Column(children: [
+          if (index == 0) { return Column(children: [
             if (widget.restaurant != null) SectionTitle(widget.restaurant!.name),
             if (_model.error != null) ...[Notice(_model.error!, error: true),
               TextButton(onPressed: () => _model.load(), child: const Text('Tentar novamente'))],
             if (_model.busy) const LinearProgressIndicator(),
             if (!_model.busy && _model.items.isEmpty && _model.error == null)
               const EmptyState('Nada cadastrado ainda. Toque em Adicionar para começar.'),
-          ]);
-          if (index > _model.items.length) return _model.more
-            ? LoadMore(busy: _model.busy, onPressed: () => _model.load(next: true)) : const SizedBox.shrink();
+          ]); }
+          if (index > _model.items.length) { return _model.more
+            ? LoadMore(busy: _model.busy, onPressed: () => _model.load(next: true)) : const SizedBox.shrink(); }
           final item = _model.items[index - 1];
-          if (item is Restaurant) return Card(child: Padding(padding: const EdgeInsets.all(16), child:
+          if (item is Restaurant) { return Card(child: Padding(padding: const EdgeInsets.all(16), child:
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(item.name, style: Theme.of(context).textTheme.titleLarge),
               Text(item.published ? 'Publicado • ${item.slug}' : 'Rascunho • ${item.slug}'),
@@ -72,9 +72,9 @@ class _OwnerListViewState extends State<OwnerListView> {
                 OutlinedButton(onPressed: () => Navigator.pushNamed(context, '/qr', arguments: AdminArgs(item)), child: const Text('QR code')),
                 if (item.published) TextButton(onPressed: () => Navigator.pushNamed(context, '/menu', arguments: MenuArgs(item.slug)), child: const Text('Ver cardápio')),
               ]),
-            ])));
-          if (item is Category) return Card(child: ListTile(title: Text(item.name),
-            trailing: const Icon(Icons.edit_outlined), onTap: () => _edit(item)));
+            ]))); }
+          if (item is Category) { return Card(child: ListTile(title: Text(item.name),
+            trailing: const Icon(Icons.edit_outlined), onTap: () => _edit(item))); }
           return ProductTile(product: item as Product, onTap: () => _edit(item));
         })))));
   }
@@ -117,21 +117,21 @@ class _EditorViewState extends State<EditorView> {
   }
   void _finish() {
     setState(() { _dirty = false; _leaving = true; });
-    WidgetsBinding.instance.addPostFrameCallback((_) { if (mounted) Navigator.pop(context, true); });
+    WidgetsBinding.instance.addPostFrameCallback((_) { if (mounted) { Navigator.pop(context, true); } });
   }
   Future<void> _save() async {
-    if (!_form.currentState!.validate()) return;
+    if (!_form.currentState!.validate()) { return; }
     final ok = await _model.save(name: _name.text, description: _description.text,
       slug: _slug.text, price: _price.text, categoryId: _category, enabled: _enabled);
-    if (ok && mounted) _finish();
+    if (ok && mounted) { _finish(); }
   }
   Future<void> _delete() async {
     final warning = widget.args.table == 'restaurants'
       ? 'O restaurante, suas categorias e produtos serão excluídos permanentemente.'
       : 'Este registro será excluído permanentemente.';
-    if (!await confirm(context, 'Excluir registro?', warning) || !mounted) return;
+    if (!await confirm(context, 'Excluir registro?', warning) || !mounted) { return; }
     final ok = await _model.delete();
-    if (ok && mounted) _finish();
+    if (ok && mounted) { _finish(); }
   }
   @override
   Widget build(BuildContext context) {
@@ -140,11 +140,11 @@ class _EditorViewState extends State<EditorView> {
     return ListenableBuilder(listenable: _model, builder: (context, _) => PopScope(
       canPop: _leaving || (!_dirty && !_model.busy),
       onPopInvokedWithResult: (didPop, result) async {
-        if (didPop || _model.busy) return;
-        if (await confirm(context, 'Descartar alterações?', 'As alterações não salvas serão perdidas.') && mounted) _finish();
+        if (didPop || _model.busy) { return; }
+        if (await confirm(context, 'Descartar alterações?', 'As alterações não salvas serão perdidas.') && mounted) { _finish(); }
       },
       child: Scaffold(appBar: AppBar(title: Text('${_model.id == null ? 'Adicionar' : 'Editar'} $type')),
-        body: ContentWidth(child: Form(key: _form, onChanged: () { if (!_dirty) setState(() => _dirty = true); },
+        body: ContentWidth(child: Form(key: _form, onChanged: () { if (!_dirty) { setState(() => _dirty = true); } },
           child: ListView(padding: const EdgeInsets.all(24), children: [
             TextFormField(controller: _name, enabled: !_model.busy,
               validator: (v) => Rules.name(v, min: table == 'restaurants' ? 2 : 1, max: table == 'categories' ? 80 : 120),

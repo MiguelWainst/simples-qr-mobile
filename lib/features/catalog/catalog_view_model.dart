@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' hide Category;
 import '../../data/local/catalog_cache.dart';
 import '../../data/remote/catalog_repository.dart';
 import '../../domain/catalog.dart';
@@ -22,10 +22,10 @@ class CatalogViewModel extends ChangeNotifier {
   int _page = 0, _generation = 0;
   bool _disposed = false;
   Timer? _debounce;
-  void _notify() { if (!_disposed) notifyListeners(); }
+  void _notify() { if (!_disposed) { notifyListeners(); } }
 
   Future<void> load({bool next = false}) async {
-    if (_disposed || (next && (busy || !more))) return;
+    if (_disposed || (next && (busy || !more))) { return; }
     final generation = ++_generation;
     busy = true; error = null; cacheWarning = null;
     _notify();
@@ -34,7 +34,7 @@ class CatalogViewModel extends ChangeNotifier {
       final r = await repository.bySlug(slug);
       final c = await repository.categories(r.id);
       final p = await repository.products(r.id, search: search, category: category, page: page);
-      if (_disposed || generation != _generation) return;
+      if (_disposed || generation != _generation) { return; }
       restaurant = r; categories = c;
       products = next ? [...products, ...p] : p;
       _page = page; more = p.length == CatalogRepository.pageSize;
@@ -52,7 +52,7 @@ class CatalogViewModel extends ChangeNotifier {
         } catch (_) { cacheWarning = 'Cardápio carregado, mas não foi possível salvar offline.'; }
       }
     } catch (e) {
-      if (_disposed || generation != _generation) return;
+      if (_disposed || generation != _generation) { return; }
       if (e is FormatException) {
         await cache.remove(slug);
         products = []; restaurant = null;

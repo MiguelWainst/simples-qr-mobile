@@ -20,14 +20,14 @@ class _AuthViewState extends State<AuthView> {
   void initState() {
     super.initState();
     final client = widget.services.client;
-    if (client != null) _model = AuthViewModel(client);
+    if (client != null) { _model = AuthViewModel(client); }
   }
   @override
   void dispose() { _email.dispose(); _password.dispose(); _model?.dispose(); super.dispose(); }
   Future<void> _submit() async {
-    if (!_form.currentState!.validate()) return;
+    if (!_form.currentState!.validate()) { return; }
     final ok = await _model!.submit(widget.mode, _email.text, _password.text);
-    if (!mounted || !ok) return;
+    if (!mounted || !ok) { return; }
     Navigator.of(context).pushNamedAndRemoveUntil('/owner', (route) => route.isFirst);
   }
   @override
@@ -74,7 +74,7 @@ class OwnerGuard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final client = services.client;
-    if (client == null) return AuthView(services: services, mode: AuthMode.login);
+    if (client == null) { return AuthView(services: services, mode: AuthMode.login); }
     return StreamBuilder(stream: client.auth.onAuthStateChange, builder: (context, snapshot) =>
       client.auth.currentUser == null ? AuthView(services: services, mode: AuthMode.login) : child);
   }

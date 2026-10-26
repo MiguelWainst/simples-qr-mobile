@@ -17,8 +17,8 @@ abstract final class AppRoutes {
   static const settings = '/settings';
   static Route<dynamic> generate(RouteSettings route, ThemeViewModel theme, [AppServices? services]) =>
     MaterialPageRoute<dynamic>(settings: route, builder: (context) {
-      if (route.name == settings) return SettingsView(viewModel: theme);
-      if (services == null) return HomeView(onSettings: () => Navigator.pushNamed(context, settings));
+      if (route.name == settings) { return SettingsView(viewModel: theme); }
+      if (services == null) { return HomeView(onSettings: () => Navigator.pushNamed(context, settings)); }
       final args = route.arguments;
       Widget guard(Widget child) => OwnerGuard(services: services, child: child);
       return switch(route.name) {

@@ -19,33 +19,33 @@ class _FavoritesViewState extends State<FavoritesView> {
   Future<void> _load() async {
     try {
       final items = await widget.services.cache.favorites();
-      if (mounted) setState(() { _items = items; _error = null; });
-    } catch(e) { if (mounted) setState(() => _error = friendlyError(e)); }
-    finally { if (mounted) setState(() => _busy = false); }
+      if (mounted) { setState(() { _items = items; _error = null; }); }
+    } catch(e) { if (mounted) { setState(() => _error = friendlyError(e)); } }
+    finally { if (mounted) { setState(() => _busy = false); } }
   }
   Future<void> _remove(Product product) async {
-    if (!await confirm(context, 'Remover favorito?', product.name) || !mounted) return;
+    if (!await confirm(context, 'Remover favorito?', product.name) || !mounted) { return; }
     try {
       await widget.services.cache.deleteFavorite(product.id);
       await _load();
-      if (!mounted) return;
+      if (!mounted) { return; }
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text('Favorito removido.'),
         action: SnackBarAction(label: 'Desfazer', onPressed: () async {
           try { await widget.services.cache.saveFavorite(product); await _load(); }
-          catch(e) { if (mounted) setState(() => _error = friendlyError(e)); }
+          catch(e) { if (mounted) { setState(() => _error = friendlyError(e)); } }
         })));
-    } catch(e) { if (mounted) setState(() => _error = friendlyError(e)); }
+    } catch(e) { if (mounted) { setState(() => _error = friendlyError(e)); } }
   }
   @override
   Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('Favoritos')),
     body: ContentWidth(child: RefreshIndicator(onRefresh: _load, child: ListView.builder(
       padding: const EdgeInsets.all(20), itemCount: _items.length + 1, itemBuilder: (context, index) {
-        if (index == 0) return Column(children: [
+        if (index == 0) { return Column(children: [
           const Notice('Produtos salvos neste aparelho. Preços e disponibilidade podem ter mudado.'),
           if (_busy) const LinearProgressIndicator(),
           if (_error != null) Notice(_error!, error: true),
           if (!_busy && _items.isEmpty) const EmptyState('Seus sabores favoritos vão aparecer aqui.', icon: Icons.favorite_border),
-        ]);
+        ]); }
         final p = _items[index - 1];
         return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
           ProductTile(product: p, onTap: () async {
@@ -71,14 +71,14 @@ class _ProductViewState extends State<ProductView> {
   Future<void> _check() async {
     try {
       final items = await widget.services.cache.favorites();
-      if (mounted) setState(() => _saved = items.any((p) => p.id == widget.args.product.id));
-    } catch(e) { if (mounted) setState(() => _error = friendlyError(e)); }
-    finally { if (mounted) setState(() => _busy = false); }
+      if (mounted) { setState(() => _saved = items.any((p) => p.id == widget.args.product.id)); }
+    } catch(e) { if (mounted) { setState(() => _error = friendlyError(e)); } }
+    finally { if (mounted) { setState(() => _busy = false); } }
   }
   Future<void> _toggle() async {
     final p = widget.args.product;
-    if (_saved && !await confirm(context, 'Remover favorito?', p.name)) return;
-    if (!mounted) return;
+    if (_saved && !await confirm(context, 'Remover favorito?', p.name)) { return; }
+    if (!mounted) { return; }
     setState(() { _busy = true; _error = null; });
     try {
       if (_saved) { await widget.services.cache.deleteFavorite(p.id); }
@@ -90,11 +90,11 @@ class _ProductViewState extends State<ProductView> {
           content: Text(removed ? 'Favorito removido.' : 'Produto salvo nos favoritos.'),
           action: removed ? SnackBarAction(label: 'Desfazer', onPressed: () async {
             try { await widget.services.cache.saveFavorite(p); await _check(); }
-            catch(e) { if (mounted) setState(() => _error = friendlyError(e)); }
+            catch(e) { if (mounted) { setState(() => _error = friendlyError(e)); } }
           }) : null));
       }
-    } catch(e) { if (mounted) setState(() => _error = friendlyError(e)); }
-    finally { if (mounted) setState(() => _busy = false); }
+    } catch(e) { if (mounted) { setState(() => _error = friendlyError(e)); } }
+    finally { if (mounted) { setState(() => _busy = false); } }
   }
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../../shared/widgets/catalog_widgets.dart';
 class ConnectionApp extends StatelessWidget {
@@ -27,11 +28,11 @@ class _ConnectionViewState extends State<ConnectionView> {
   @override
   void dispose() { _url.dispose(); _key.dispose(); super.dispose(); }
   Future<void> _connect() async {
-    if (!_form.currentState!.validate()) return;
+    if (!_form.currentState!.validate()) { return; }
     setState(() { _busy = true; _error = null; });
     try { await widget.onConnect(_url.text.trim(), _key.text.trim()); }
-    catch (_) { if (mounted) setState(() => _error = 'Não foi possível iniciar. Confira a URL, a chave pública e sua conexão.'); }
-    finally { if (mounted) setState(() => _busy = false); }
+    catch (_) { if (mounted) { setState(() => _error = 'Não foi possível iniciar. Confira a URL, a chave pública e sua conexão.'); } }
+    finally { if (mounted) { setState(() => _busy = false); } }
   }
   @override
   Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('Simples QR')),
@@ -44,8 +45,18 @@ class _ConnectionViewState extends State<ConnectionView> {
           return uri != null && uri.scheme == 'https' && uri.host.endsWith('.supabase.co') ? null : 'Informe a URL HTTPS do projeto Supabase.'; }),
       const SizedBox(height: 16),
       TextFormField(controller: _key, decoration: const InputDecoration(labelText: 'Chave pública publishable ou anon', border: OutlineInputBorder()),
-        validator: (v) => (v ?? '').startsWith('sb_secret_') ? 'Use a chave pública, nunca a secret.'
-          : (v ?? '').trim().length < 30 ? 'Cole a chave pública completa.' : null),
+        validator: (value) {
+          final key = (value ?? '').trim();
+          if (key.startsWith('sb_publishable_') && key.length > 30) { return null; }
+          try {
+            final parts = key.split('.');
+            if (parts.length == 3) {
+              final payload = jsonDecode(utf8.decode(base64Url.decode(base64Url.normalize(parts[1])))) as Map;
+              if (payload['role'] == 'anon') { return null; }
+            }
+          } catch (_) {}
+          return 'Use somente a chave pública publishable ou anon.';
+        }),
       const SizedBox(height: 16),
       if (_error != null) Notice(_error!, error: true),
       BusyButton(label: 'Conectar', busy: _busy, onPressed: _connect),

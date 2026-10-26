@@ -16,8 +16,8 @@ class FakeRepository extends CatalogRepository {
   bool fail = false, unpublished = false;
   @override
   Future<Restaurant> bySlug(String slug) async {
-    if (unpublished) throw const FormatException('Cardápio não encontrado ou não publicado.');
-    if (fail) throw TimeoutException('offline');
+    if (unpublished) { throw const FormatException('Cardápio não encontrado ou não publicado.'); }
+    if (fail) { throw TimeoutException('offline'); }
     return restaurant;
   }
   @override

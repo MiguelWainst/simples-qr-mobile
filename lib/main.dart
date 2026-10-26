@@ -19,7 +19,7 @@ Future<void> main() async {
   final url = definedUrl.isNotEmpty ? definedUrl : preferences.getString('connection.url') ?? '';
   final key = definedKey.isNotEmpty ? definedKey : preferences.getString('connection.key') ?? '';
   Future<void> connect(String url, String key) async {
-    await Supabase.initialize(url: url, anonKey: key,
+    await Supabase.initialize(url: url, publishableKey: key,
       authOptions: FlutterAuthClientOptions(localStorage: kIsWeb ? null : const SecureSession()));
     await preferences.setString('connection.url', url);
     await preferences.setString('connection.key', key);

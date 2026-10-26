@@ -29,7 +29,7 @@ class CatalogCache {
   final SharedPreferences preferences;
   final bool useSqlite;
   Future<String?> read(String key) async {
-    if (!useSqlite) return preferences.getString('catalog.$key');
+    if (!useSqlite) { return preferences.getString('catalog.$key'); }
     final rows = await (await DatabaseHelper.instance.database).query('cache',
       where: 'key = ?', whereArgs: [key], limit: 1);
     return rows.isEmpty ? null : rows.first['value'] as String;

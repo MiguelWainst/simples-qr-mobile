@@ -14,7 +14,7 @@ class AuthViewModel extends ChangeNotifier {
     ? Uri.base.replace(query: '', fragment: '').toString()
     : 'simplesqr://auth-callback';
   Future<bool> submit(AuthMode mode, String email, String password) async {
-    if (busy) return false;
+    if (busy) { return false; }
     busy = true; error = null; message = null; notifyListeners();
     try {
       switch (mode) {
@@ -41,7 +41,7 @@ class AuthViewModel extends ChangeNotifier {
     } catch (e) {
       error = friendlyError(e); return false;
     } finally {
-      busy = false; if (!_disposed) notifyListeners();
+      busy = false; if (!_disposed) { notifyListeners(); }
     }
   }
   @override

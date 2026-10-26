@@ -24,15 +24,15 @@ class _MenuViewState extends State<MenuView> {
   @override
   Widget build(BuildContext context) {
     final m = _model;
-    if (m == null) return Scaffold(appBar: AppBar(title: const Text('Cardápio')),
-      body: const EmptyState('Conecte o aplicativo ao Supabase para consultar este cardápio.'));
+    if (m == null) { return Scaffold(appBar: AppBar(title: const Text('Cardápio')),
+      body: const EmptyState('Conecte o aplicativo ao Supabase para consultar este cardápio.')); }
     return ListenableBuilder(listenable: m, builder: (context, _) => Scaffold(
       appBar: AppBar(title: Text(m.restaurant?.name ?? 'Cardápio'), actions: [
         IconButton(tooltip: 'Atualizar', onPressed: m.busy ? null : () => m.load(), icon: const Icon(Icons.refresh))]),
       body: ContentWidth(child: RefreshIndicator(onRefresh: () => m.load(), child: ListView.builder(
         padding: const EdgeInsets.all(20), itemCount: m.products.length + 2,
         itemBuilder: (context, index) {
-          if (index == 0) return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          if (index == 0) { return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             if (m.restaurant != null) ...[
               SectionTitle(m.restaurant!.name),
               Text(m.restaurant!.description),
@@ -53,9 +53,9 @@ class _MenuViewState extends State<MenuView> {
             if (m.busy) const LinearProgressIndicator(),
             if (!m.busy && m.products.isEmpty && m.error == null)
               const EmptyState('Nenhum produto encontrado. Experimente outra busca ou categoria.'),
-          ]);
-          if (index > m.products.length) return m.more
-            ? LoadMore(busy: m.busy, onPressed: () => m.load(next: true)) : const SizedBox(height: 24);
+          ]); }
+          if (index > m.products.length) { return m.more
+            ? LoadMore(busy: m.busy, onPressed: () => m.load(next: true)) : const SizedBox(height: 24); }
           final p = m.products[index - 1];
           return ProductTile(product: p, onTap: () => Navigator.pushNamed(context, '/product',
             arguments: ProductArgs(p, offline: m.offline)));

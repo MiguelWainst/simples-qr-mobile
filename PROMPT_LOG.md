@@ -31,3 +31,15 @@ Ainda não realizadas pelo autor. O mínimo final é duas refatorações reais c
 ## Lições
 
 Uso de IA não substitui compreensão na arguição. Geração de código, execução de testes e validação humana são etapas diferentes e devem ter evidências separadas.
+
+## #02 — 26/10/2026 — Projeto final
+
+**Prompt do autor:** “agora vamos partir para o projeto final, faça o planejamento e depois execute, quero algo funcional para hoje ok?”
+
+**Execução pela IA:** plano em docs/PLANO_FINAL.md; branch feat/projeto-final e PR #46; implementação de autenticação Supabase, catálogo paginado, CRUD, QR, favoritos e cache local, componentes e testes. Terminal do ambiente bloqueado; edições realizadas via GitHub, validação delegada ao GitHub Actions. Isso não é uma revisão humana.
+
+**Decisões críticas:** preço inteiro em centavos; cache apenas de dados públicos; exclusão de cache após resposta de cardápio retirado do ar; guardas de sessão mais RLS do servidor; rejeição de conteúdo QR arbitrário; tratamento de respostas de busca fora de ordem; confirmação antes de excluir/sair de formulário. Não foram inseridos dados ou credenciais fictícios para simular integração.
+
+**Dependências de validação:** Project URL/chave pública reais, teste de conta e e-mail, câmera em aparelho e isolamento RLS com duas contas. Não registrar como concluídas sem evidência.
+
+**Refatorações manuais do aluno:** continuam pendentes. As alterações geradas pela IA não contam como duas refatorações manuais feitas pelo autor.

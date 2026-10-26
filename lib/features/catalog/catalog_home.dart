@@ -26,15 +26,15 @@ class _CatalogHomeState extends State<CatalogHome> {
     setState(() { _busy = true; _error = null; });
     try {
       final history = List<String>.from(jsonDecode(await widget.services.cache.read('history') ?? '[]') as List);
-      if (mounted) setState(() => _history = history);
+      if (mounted) { setState(() => _history = history); }
       final page = next ? _page + 1 : 0;
       final data = await widget.services.repository.restaurants(page: page);
-      if (mounted) setState(() {
+      if (mounted) { setState(() {
         _restaurants = next ? [..._restaurants, ...data] : data;
         _page = page; _more = data.length == CatalogRepository.pageSize;
-      });
-    } catch(e) { if (mounted) setState(() => _error = friendlyError(e)); }
-    finally { if (mounted) setState(() => _busy = false); }
+      }); }
+    } catch(e) { if (mounted) { setState(() => _error = friendlyError(e)); } }
+    finally { if (mounted) { setState(() => _busy = false); } }
   }
   void _open() {
     final code = Rules.menuCode(_code.text);
@@ -54,7 +54,7 @@ class _CatalogHomeState extends State<CatalogHome> {
     body: ContentWidth(child: RefreshIndicator(onRefresh: _load, child: ListView.builder(
       padding: const EdgeInsets.all(20), itemCount: _restaurants.length + 2,
       itemBuilder: (context, index) {
-        if (index == 0) return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        if (index == 0) { return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Card(color: Theme.of(context).colorScheme.primaryContainer, child: Padding(
             padding: const EdgeInsets.all(24), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Icon(Icons.qr_code_2, size: 56),
@@ -82,9 +82,9 @@ class _CatalogHomeState extends State<CatalogHome> {
           if (_busy) const LinearProgressIndicator(),
           if (!_busy && _restaurants.isEmpty && _error == null)
             const EmptyState('Nenhum restaurante publicado ainda. Entre na área do proprietário para criar o primeiro.'),
-        ]);
-        if (index > _restaurants.length) return _more
-          ? LoadMore(busy: _busy, onPressed: () => _load(next: true)) : const SizedBox(height: 24);
+        ]); }
+        if (index > _restaurants.length) { return _more
+          ? LoadMore(busy: _busy, onPressed: () => _load(next: true)) : const SizedBox(height: 24); }
         final r = _restaurants[index - 1];
         return RestaurantTile(restaurant: r, onTap: () => Navigator.pushNamed(context, '/menu', arguments: MenuArgs(r.slug)));
       }))));

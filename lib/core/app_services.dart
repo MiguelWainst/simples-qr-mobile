@@ -8,7 +8,7 @@ class AppServices {
   final CatalogCache cache;
   final SupabaseClient? client;
   CatalogRepository get repository {
-    if (client == null) throw const FormatException('Configure a conexão com o Supabase para consultar os cardápios.');
+    if (client == null) { throw const FormatException('Configure a conexão com o Supabase para consultar os cardápios.'); }
     return CatalogRepository(client!);
   }
 }

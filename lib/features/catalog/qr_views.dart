@@ -18,10 +18,10 @@ class _ScannerViewState extends State<ScannerView> {
   @override
   void dispose() { _controller.dispose(); super.dispose(); }
   void _detect(BarcodeCapture capture) {
-    if (_opened) return;
+    if (_opened) { return; }
     for (final barcode in capture.barcodes) {
       final code = Rules.menuCode(barcode.rawValue ?? '');
-      if (code == null) continue;
+      if (code == null) { continue; }
       _opened = true;
       Navigator.pushReplacementNamed(context, '/menu', arguments: MenuArgs(code));
       return;
@@ -59,7 +59,7 @@ class RestaurantQrView extends StatelessWidget {
         const SizedBox(height: 20), SelectableText(link ?? restaurant.slug, textAlign: TextAlign.center),
         TextButton.icon(onPressed: () async {
           await Clipboard.setData(ClipboardData(text: link ?? restaurant.slug));
-          if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Copiado.')));
+          if (context.mounted) { ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Copiado.'))); }
         }, icon: const Icon(Icons.copy), label: const Text('Copiar endereço ou código')),
       ])));
   }
