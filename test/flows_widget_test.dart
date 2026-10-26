@@ -13,12 +13,25 @@ void main() {
   late AppServices services;
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
-    services = AppServices(cache: CatalogCache(await SharedPreferences.getInstance(), useSqlite: false),
-      client: SupabaseClient('https://example.supabase.co', 'public-key'));
+    services = AppServices(
+      cache: CatalogCache(
+        await SharedPreferences.getInstance(),
+        useSqlite: false,
+      ),
+      client: SupabaseClient('https://example.supabase.co', 'public-key'),
+    );
   });
-  tearDown(() async { await services.client!.dispose(); });
-  testWidgets('Cadastro impede envio de email e senha inválidos', (tester) async {
-    await tester.pumpWidget(MaterialApp(home: AuthView(services: services, mode: AuthMode.register)));
+  tearDown(() async {
+    await services.client!.dispose();
+  });
+  testWidgets('Cadastro impede envio de email e senha inválidos', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: AuthView(services: services, mode: AuthMode.register),
+      ),
+    );
     await tester.enterText(find.byType(TextFormField).at(0), 'invalido');
     await tester.enterText(find.byType(TextFormField).at(1), '123');
     await tester.tap(find.widgetWithText(FilledButton, 'Criar conta'));
@@ -28,8 +41,18 @@ void main() {
     expect(tester.takeException(), isNull);
   });
   testWidgets('Detalhes salvam favorito e confirmam remoção', (tester) async {
-    const p = Product(id: 'p', restaurantId: 'r', categoryId: 'c', name: 'Café', priceCents: 1290);
-    await tester.pumpWidget(MaterialApp(home: ProductView(services: services, args: const ProductArgs(p))));
+    const p = Product(
+      id: 'p',
+      restaurantId: 'r',
+      categoryId: 'c',
+      name: 'Café',
+      priceCents: 1290,
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProductView(services: services, args: const ProductArgs(p)),
+      ),
+    );
     await tester.pumpAndSettle();
     await tester.ensureVisible(find.text('Salvar nos favoritos'));
     await tester.tap(find.text('Salvar nos favoritos'));

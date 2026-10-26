@@ -43,3 +43,5 @@ Uso de IA não substitui compreensão na arguição. Geração de código, execu
 **Dependências de validação:** Project URL/chave pública reais, teste de conta e e-mail, câmera em aparelho e isolamento RLS com duas contas. Não registrar como concluídas sem evidência.
 
 **Refatorações manuais do aluno:** continuam pendentes. As alterações geradas pela IA não contam como duas refatorações manuais feitas pelo autor.
+
+**Evidência final automatizada:** GitHub Actions run 40413036561 — analyze sem diagnósticos, 14 testes aprovados, build web e APK de teste concluídos. Fontes formatadas e lockfile gerados pela CI foram incorporados ao Git. Nenhum desses resultados equivale a revisão humana ou teste do Supabase real.

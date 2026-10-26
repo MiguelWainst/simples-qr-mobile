@@ -81,7 +81,7 @@ flutter build web
 flutter build apk --debug
 ```
 
-O workflow Flutter normaliza a formatação, executa análise, testes e builds e fornece artefatos web, APK de teste e fontes formatadas. Consulte [evidências e limitações](docs/VALIDACAO.md); implementação não significa teste de câmera, e-mail ou RLS realizado.
+O workflow Flutter verifica a formatação, executa análise, testes e builds e fornece artefatos web e APK de teste. A rodada de 26/10 aprovou analyze, 14 testes e ambos os builds. Consulte [evidências e limitações](docs/VALIDACAO.md); implementação não significa teste de câmera, e-mail ou RLS realizado.
 
 ## Entrega acadêmica
 

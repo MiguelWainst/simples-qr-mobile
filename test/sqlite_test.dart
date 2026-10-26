@@ -9,17 +9,29 @@ void main() {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
     SharedPreferences.setMockInitialValues({});
-    final cache = CatalogCache(await SharedPreferences.getInstance(), useSqlite: true);
+    final cache = CatalogCache(
+      await SharedPreferences.getInstance(),
+      useSqlite: true,
+    );
     final db = await DatabaseHelper.instance.database;
     expect(await db.getVersion(), 2);
     expect(identical(db, await DatabaseHelper.instance.database), true);
     await cache.write('teste', 'inicial');
     await cache.write('teste', 'atualizado');
     expect(await cache.read('teste'), 'atualizado');
-    const product = Product(id: 'test-product', restaurantId: 'r', categoryId: 'c', name: 'Teste', priceCents: 150);
+    const product = Product(
+      id: 'test-product',
+      restaurantId: 'r',
+      categoryId: 'c',
+      name: 'Teste',
+      priceCents: 150,
+    );
     await cache.saveFavorite(product);
     await cache.saveFavorite(product);
-    expect((await cache.favorites()).where((p) => p.id == product.id).length, 1);
+    expect(
+      (await cache.favorites()).where((p) => p.id == product.id).length,
+      1,
+    );
     await cache.deleteFavorite(product.id);
     expect((await cache.favorites()).where((p) => p.id == product.id), isEmpty);
     await cache.remove('teste');
