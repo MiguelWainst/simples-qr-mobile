@@ -46,3 +46,38 @@ jobs:
             lib/
             test/
             pubspec.lock
+
+  backend:
+    name: Verificar conexão pública Supabase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar Auth e tabelas sem alterar dados
+        env:
+          SUPABASE_URL: https://homnbfuwrbidlomsnrdo.supabase.co
+          SUPABASE_PUBLIC_KEY: sb_publishable_yHwqR3mpTN1EeRCPm4Jv4g_7RzAkbc_
+        run: |
+          python3 - <<'PY'
+          import os, json, urllib.request, urllib.error
+          base = os.environ['SUPABASE_URL']
+          headers = {'apikey': os.environ['SUPABASE_PUBLIC_KEY']}
+          paths = ['/auth/v1/settings'] + [
+              '/rest/v1/' + table + '?select=id&limit=1'
+              for table in ['restaurants', 'categories', 'products']
+          ]
+          failed = False
+          for path in paths:
+              try:
+                  req = urllib.request.Request(base + path, headers=headers)
+                  with urllib.request.urlopen(req, timeout=20) as response:
+                      data = json.load(response)
+                      print(path.split('?')[0] + ': HTTP ' + str(response.status))
+              except urllib.error.HTTPError as error:
+                  failed = True
+                  print(path.split('?')[0] + ': HTTP ' + str(error.code))
+                  print(error.read().decode()[:500])
+              except Exception as error:
+                  failed = True
+                  print(type(error).__name__ + ': falha de conexão')
+          if failed:
+              raise SystemExit(1)
+          PY
