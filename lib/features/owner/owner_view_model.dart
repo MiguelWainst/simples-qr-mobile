@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart' hide Category;
 import '../../core/app_services.dart';
 import '../../data/remote/catalog_repository.dart';
 import '../../domain/catalog.dart';
+import '../../domain/menu_address.dart';
 
 class OwnerViewModel extends ChangeNotifier {
   OwnerViewModel(
@@ -62,6 +63,11 @@ class EditorViewModel extends ChangeNotifier {
   EditorViewModel(this.repository, this.args);
   final CatalogRepository repository;
   final EditorArgs args;
+  String? _generatedAddress;
+
+  String addressFor(String name) =>
+      args.restaurant?.slug ??
+      (_generatedAddress ??= MenuAddress.generate(name));
   bool busy = false, _disposed = false;
   String? error;
   List<Category> categories = [];
@@ -88,7 +94,6 @@ class EditorViewModel extends ChangeNotifier {
   Future<bool> save({
     required String name,
     required String description,
-    required String slug,
     required String price,
     required String? categoryId,
     required bool enabled,
@@ -107,12 +112,12 @@ class EditorViewModel extends ChangeNotifier {
       final Json values;
       switch (args.table) {
         case 'restaurants':
-          if (Rules.name(name, min: 2) != null || Rules.slug(slug) != null) {
-            throw const FormatException('Confira nome e endereço.');
+          if (Rules.name(name, min: 2) != null) {
+            throw const FormatException('Confira o nome do restaurante.');
           }
           values = {
             'name': name.trim(),
-            'slug': slug.trim(),
+            'slug': addressFor(name),
             'description': description.trim(),
             'published': enabled,
             if (id == null) 'owner_id': user.id,

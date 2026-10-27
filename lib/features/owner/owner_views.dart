@@ -232,7 +232,6 @@ class _EditorViewState extends State<EditorView> {
   final _form = GlobalKey<FormState>();
   final _name = TextEditingController(),
       _description = TextEditingController(),
-      _slug = TextEditingController(),
       _price = TextEditingController();
   late final EditorViewModel _model;
   String? _category;
@@ -245,7 +244,6 @@ class _EditorViewState extends State<EditorView> {
     if (a.table == 'restaurants') {
       _name.text = a.restaurant?.name ?? '';
       _description.text = a.restaurant?.description ?? '';
-      _slug.text = a.restaurant?.slug ?? '';
       _enabled = a.restaurant?.published ?? false;
     } else if (a.table == 'categories') {
       _name.text = a.category?.name ?? '';
@@ -268,7 +266,6 @@ class _EditorViewState extends State<EditorView> {
     _model.dispose();
     _name.dispose();
     _description.dispose();
-    _slug.dispose();
     _price.dispose();
     super.dispose();
   }
@@ -292,7 +289,6 @@ class _EditorViewState extends State<EditorView> {
     final ok = await _model.save(
       name: _name.text,
       description: _description.text,
-      slug: _slug.text,
       price: _price.text,
       categoryId: _category,
       enabled: _enabled,
@@ -369,20 +365,6 @@ class _EditorViewState extends State<EditorView> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  if (table == 'restaurants') ...[
-                    TextFormField(
-                      controller: _slug,
-                      enabled: !_model.busy,
-                      validator: Rules.slug,
-                      decoration: const InputDecoration(
-                        labelText: 'Endereço do cardápio',
-                        hintText: 'meu-restaurante',
-                        helperText: 'Alterar o endereço invalida os QR codes anteriores.',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
                   if (table != 'categories') ...[
                     TextFormField(
                       controller: _description,
