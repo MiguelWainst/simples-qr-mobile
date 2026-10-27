@@ -34,7 +34,7 @@ jobs:
           name: simples-qr-web
           path: build/web
       - name: Build Android
-        run: flutter build apk --debug
+        run: flutter build apk --debug --dart-define=PUBLIC_APP_URL=https://miguelwainst.github.io/simples-qr-mobile/
       - uses: actions/upload-artifact@v4
         with:
           name: simples-qr-android
@@ -80,25 +80,4 @@ jobs:
                   print(type(error).__name__ + ': falha de conexão')
           if failed:
               raise SystemExit(1)
-          PY
-
-  formatted_sources:
-    name: Preparar fontes formatadas
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.47.6'
-          channel: stable
-          cache: true
-      - run: flutter pub get
-      - run: dart format lib test
-      - name: Exportar alterações de formatação
-        run: |
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          paths = ['lib/features/owner/owner_views.dart', 'lib/features/owner/owner_view_model.dart', 'lib/domain/menu_address.dart', 'test/menu_address_test.dart']
-          print('SOURCE_SNAPSHOT=' + json.dumps({p: Path(p).read_text() for p in paths}))
           PY
