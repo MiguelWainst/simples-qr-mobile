@@ -1,17 +1,83 @@
 name: Flutter
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: flutter-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.47.6'
           channel: stable
           cache: true
       - run: flutter pub get
-      - run: dart format --output=none --set-exit-if-changed lib test
+      - name: Format source
+        run: dart format --output=none --set-exit-if-changed lib test
       - run: flutter analyze
       - run: flutter test
       - run: flutter build web
+      - uses: actions/upload-artifact@v4
+        with:
+          name: simples-qr-web
+          path: build/web
+      - name: Build Android
+        run: flutter build apk --debug --dart-define=PUBLIC_APP_URL=https://miguelwainst.github.io/simples-qr-mobile/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: simples-qr-android
+          path: build/app/outputs/flutter-apk/app-debug.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fontes-formatadas
+          path: |
+            lib/
+            test/
+            pubspec.lock
+
+  backend:
+    name: Verificar conexão pública Supabase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar Auth e tabelas sem alterar dados
+        env:
+          SUPABASE_URL: https://homnbfuwrbidlomsnrdo.supabase.co
+          SUPABASE_PUBLIC_KEY: sb_publishable_yHwqR3mpTN1EeRCPm4Jv4g_7RzAkbc_
+        run: |
+          python3 - <<'PY'
+          import os, json, urllib.request, urllib.error
+          base = os.environ['SUPABASE_URL']
+          headers = {'apikey': os.environ['SUPABASE_PUBLIC_KEY']}
+          paths = ['/auth/v1/settings'] + [
+              '/rest/v1/' + table + '?select=id&limit=1'
+              for table in ['restaurants', 'categories', 'products']
+          ]
+          failed = False
+          for path in paths:
+              try:
+                  req = urllib.request.Request(base + path, headers=headers)
+                  with urllib.request.urlopen(req, timeout=20) as response:
+                      data = json.load(response)
+                      print(path.split('?')[0] + ': HTTP ' + str(response.status))
+              except urllib.error.HTTPError as error:
+                  failed = True
+                  print(path.split('?')[0] + ': HTTP ' + str(error.code))
+                  print(error.read().decode()[:500])
+              except Exception as error:
+                  failed = True
+                  print(type(error).__name__ + ': falha de conexão')
+          if failed:
+              raise SystemExit(1)
+          PY
