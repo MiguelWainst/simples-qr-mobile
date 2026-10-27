@@ -15,8 +15,14 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final preferences = await SharedPreferences.getInstance();
   final theme = ThemeViewModel(PreferencesRepository(preferences));
-  const definedUrl = String.fromEnvironment('SUPABASE_URL');
-  const definedKey = String.fromEnvironment('SUPABASE_ANON_KEY');
+  const definedUrl = String.fromEnvironment(
+    'SUPABASE_URL',
+    defaultValue: 'https://homnbfuwrbidlomsnrdo.supabase.co',
+  );
+  const definedKey = String.fromEnvironment(
+    'SUPABASE_ANON_KEY',
+    defaultValue: 'sb_publishable_yHwqR3mpTN1EeRCPm4Jv4g_7RzAkbc_',
+  );
   final url = definedUrl.isNotEmpty
       ? definedUrl
       : preferences.getString('connection.url') ?? '';
