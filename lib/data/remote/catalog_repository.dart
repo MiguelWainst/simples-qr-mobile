@@ -176,6 +176,17 @@ String friendlyError(Object error) {
     return 'Não foi possível enviar a foto. Sua edição foi mantida; tente salvar novamente.';
   }
   if (error is PostgrestException) {
+    if (error.code == 'PGRST204' &&
+        [
+          'sale_price_cents',
+          'flash_ends_at',
+          'is_new',
+          'logo_url',
+          'menu_accent',
+          'menu_title',
+        ].any(error.message.contains)) {
+      return 'Aplique a migração 003 no Supabase para ativar promoções e personalização.';
+    }
     if (error.code == 'PGRST204' && error.message.contains('image_url')) {
       return 'As fotos ainda não foram ativadas no banco. Aplique a atualização de fotos no Supabase e tente salvar novamente.';
     }

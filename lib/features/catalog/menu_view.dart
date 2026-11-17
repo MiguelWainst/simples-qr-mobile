@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../core/app_services.dart';
+import '../../core/theme/app_theme.dart';
 import '../../shared/widgets/catalog_widgets.dart';
-import '../../shared/widgets/menu_photo.dart';
+import '../../shared/widgets/menu_header.dart';
 import 'catalog_view_model.dart';
 
 class MenuView extends StatefulWidget {
@@ -46,92 +47,102 @@ class _MenuViewState extends State<MenuView> {
     }
     return ListenableBuilder(
       listenable: m,
-      builder: (context, _) => Scaffold(
-        appBar: AppBar(
-          title: Text(m.restaurant?.name ?? 'Cardápio'),
-          actions: [
-            IconButton(
-              tooltip: 'Atualizar',
-              onPressed: m.busy ? null : () => m.load(),
-              icon: const Icon(Icons.refresh),
-            ),
-          ],
+      builder: (context, _) => Theme(
+        data: AppTheme.build(
+          Theme.of(context).brightness,
+          menuAccent: m.restaurant?.menuAccent,
         ),
-        body: ContentWidth(
-          child: RefreshIndicator(
-            onRefresh: () => m.load(),
-            child: ListView.builder(
-              padding: const EdgeInsets.all(20),
-              itemCount: m.products.length + 2,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      if (m.restaurant != null) ...[
-                        if (m.restaurant!.imageUrl != null)
-                          MenuPhoto(
-                            url: m.restaurant!.imageUrl,
-                            label: m.restaurant!.name,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Cardápio'),
+            actions: [
+              IconButton(
+                tooltip: 'Atualizar',
+                onPressed: m.busy ? null : () => m.load(),
+                icon: const Icon(Icons.refresh),
+              ),
+            ],
+          ),
+          body: ContentWidth(
+            child: RefreshIndicator(
+              onRefresh: () => m.load(),
+              child: ListView.builder(
+                padding: const EdgeInsets.all(20),
+                itemCount: m.products.length + 2,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (m.restaurant != null) ...[
+                          MenuHeader(
+                            title: m.restaurant!.displayTitle,
+                            description: m.restaurant!.description,
+                            coverUrl: m.restaurant!.imageUrl,
+                            logoUrl: m.restaurant!.logoUrl,
                           ),
-                        SectionTitle(m.restaurant!.name),
-                        Text(m.restaurant!.description),
-                        const SizedBox(height: 20),
+                          const SizedBox(height: 20),
+                        ],
+                        SearchField(onChanged: m.setSearch),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 52,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: m.categories.length + 1,
+                            itemBuilder: (context, i) {
+                              final category = i == 0
+                                  ? null
+                                  : m.categories[i - 1];
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: ChoiceChip(
+                                  label: Text(category?.name ?? 'Todos'),
+                                  selected: m.category == category?.id,
+                                  onSelected: (_) =>
+                                      m.setCategory(category?.id),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        if (m.offline)
+                          Notice(
+                            'Modo offline • salvo em ${m.syncedAt?.toLocal().toString().split('.').first ?? 'data desconhecida'}',
+                          ),
+                        if (m.cacheWarning != null) Notice(m.cacheWarning!),
+                        if (m.error != null) Notice(m.error!, error: true),
+                        if (m.busy) const LinearProgressIndicator(),
+                        if (!m.busy && m.products.isEmpty && m.error == null)
+                          const EmptyState(
+                            'Nenhum produto encontrado. Experimente outra busca ou categoria.',
+                          ),
                       ],
-                      SearchField(onChanged: m.setSearch),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        height: 52,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: m.categories.length + 1,
-                          itemBuilder: (context, i) {
-                            final category = i == 0
-                                ? null
-                                : m.categories[i - 1];
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: ChoiceChip(
-                                label: Text(category?.name ?? 'Todos'),
-                                selected: m.category == category?.id,
-                                onSelected: (_) => m.setCategory(category?.id),
-                              ),
-                            );
-                          },
-                        ),
+                    );
+                  }
+                  if (index > m.products.length) {
+                    return m.more
+                        ? LoadMore(
+                            busy: m.busy,
+                            onPressed: () => m.load(next: true),
+                          )
+                        : const SizedBox(height: 24);
+                  }
+                  final p = m.products[index - 1];
+                  return ProductTile(
+                    product: p,
+                    onTap: () => Navigator.pushNamed(
+                      context,
+                      '/product',
+                      arguments: ProductArgs(
+                        p,
+                        offline: m.offline,
+                        menuAccent: m.restaurant?.menuAccent,
                       ),
-                      if (m.offline)
-                        Notice(
-                          'Modo offline • salvo em ${m.syncedAt?.toLocal().toString().split('.').first ?? 'data desconhecida'}',
-                        ),
-                      if (m.cacheWarning != null) Notice(m.cacheWarning!),
-                      if (m.error != null) Notice(m.error!, error: true),
-                      if (m.busy) const LinearProgressIndicator(),
-                      if (!m.busy && m.products.isEmpty && m.error == null)
-                        const EmptyState(
-                          'Nenhum produto encontrado. Experimente outra busca ou categoria.',
-                        ),
-                    ],
+                    ),
                   );
-                }
-                if (index > m.products.length) {
-                  return m.more
-                      ? LoadMore(
-                          busy: m.busy,
-                          onPressed: () => m.load(next: true),
-                        )
-                      : const SizedBox(height: 24);
-                }
-                final p = m.products[index - 1];
-                return ProductTile(
-                  product: p,
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    '/product',
-                    arguments: ProductArgs(p, offline: m.offline),
-                  ),
-                );
-              },
+                },
+              ),
             ),
           ),
         ),

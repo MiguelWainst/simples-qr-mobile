@@ -60,33 +60,44 @@ class OwnerViewModel extends ChangeNotifier {
   }
 }
 
+class _ImageEdit {
+  SelectedPhoto? photo;
+  String? uploadedUrl;
+  bool changed = false;
+}
+
 class EditorViewModel extends ChangeNotifier {
   EditorViewModel(this.repository, this.args, {PhotoRepository? photos})
     : photos = photos ?? PhotoRepository(repository.client);
   final CatalogRepository repository;
   final EditorArgs args;
   final PhotoRepository photos;
-  SelectedPhoto? photo;
-  bool photoChanged = false;
-  String? _uploadedUrl, status;
-  String? get photoUrl => photoChanged
-      ? _uploadedUrl
+  final _cover = _ImageEdit();
+  final _logo = _ImageEdit();
+  String? status;
+  SelectedPhoto? get photo => _cover.photo;
+  SelectedPhoto? get logo => _logo.photo;
+  String? get logoUrl =>
+      _logo.changed ? _logo.uploadedUrl : args.restaurant?.logoUrl;
+  String? get photoUrl => _cover.changed
+      ? _cover.uploadedUrl
       : (args.table == 'restaurants'
             ? args.restaurant?.imageUrl
             : args.product?.imageUrl);
 
-  Future<bool> selectPhoto() async {
+  Future<bool> selectPhoto({bool logo = false}) async {
     if (busy || _disposed) return false;
+    final image = logo ? _logo : _cover;
     busy = true;
-    status = 'Escolhendo e preparando foto…';
+    status = logo ? 'Preparando logo…' : 'Escolhendo e preparando foto…';
     error = null;
     notifyListeners();
     try {
       final selected = await photos.pick().timeout(const Duration(seconds: 90));
       if (_disposed || selected == null) return false;
-      photo = selected;
-      photoChanged = true;
-      _uploadedUrl = null;
+      image.photo = selected;
+      image.changed = true;
+      image.uploadedUrl = null;
       return true;
     } catch (e) {
       error = friendlyError(e);
@@ -98,15 +109,30 @@ class EditorViewModel extends ChangeNotifier {
     }
   }
 
-  void removePhoto() {
+  void removePhoto({bool logo = false}) {
     if (busy) return;
-    photo = null;
-    photoChanged = true;
-    _uploadedUrl = null;
+    final image = logo ? _logo : _cover;
+    image.photo = null;
+    image.changed = true;
+    image.uploadedUrl = null;
     notifyListeners();
   }
 
+  Future<void> _saveImage(Json values, String column, _ImageEdit image) async {
+    if (!image.changed) return;
+    final photo = image.photo;
+    if (photo != null && image.uploadedUrl == null) {
+      status = column == 'logo_url' ? 'Enviando logo…' : 'Enviando foto…';
+      if (!_disposed) notifyListeners();
+      image.uploadedUrl = await photos.upload(photo);
+    }
+    values[column] = image.uploadedUrl;
+  }
+
   String? _generatedAddress;
+  DateTime? _pendingFlashEnd;
+
+  void resetFlashDeadline() => _pendingFlashEnd = null;
 
   String addressFor(String name) =>
       args.restaurant?.slug ??
@@ -140,6 +166,12 @@ class EditorViewModel extends ChangeNotifier {
     required String price,
     required String? categoryId,
     required bool enabled,
+    String? salePrice,
+    DateTime? flashEndsAt,
+    Duration? flashDuration,
+    bool isNew = false,
+    String? menuAccent,
+    String? menuTitle,
   }) async {
     if (busy) {
       return false;
@@ -158,11 +190,21 @@ class EditorViewModel extends ChangeNotifier {
           if (Rules.name(name, min: 2) != null) {
             throw const FormatException('Confira o nome do restaurante.');
           }
+          if ((menuAccent != null && Rules.menuAccent(menuAccent) == null) ||
+              (menuTitle != null && Rules.name(menuTitle) != null)) {
+            throw const FormatException(
+              'Confira o título e a cor do cardápio.',
+            );
+          }
           values = {
             'name': name.trim(),
             'slug': addressFor(name),
             'description': description.trim(),
             'published': enabled,
+            if (menuAccent != args.restaurant?.menuAccent)
+              'menu_accent': Rules.menuAccent(menuAccent ?? ''),
+            if (menuTitle != args.restaurant?.menuTitle)
+              'menu_title': menuTitle,
             if (id == null) 'owner_id': user.id,
             'updated_at': DateTime.now().toUtc().toIso8601String(),
           };
@@ -176,6 +218,16 @@ class EditorViewModel extends ChangeNotifier {
           if (cents == null || categoryId == null || Rules.name(name) != null) {
             throw const FormatException('Confira nome, categoria e preço.');
           }
+          final saleCents = salePrice == null ? null : Rules.cents(salePrice);
+          if ((salePrice != null &&
+                  (saleCents == null || saleCents >= cents)) ||
+              (flashDuration != null &&
+                  (saleCents == null || flashDuration <= Duration.zero))) {
+            throw const FormatException(
+              'Informe um preço promocional menor que o preço normal.',
+            );
+          }
+          final end = saleCents == null ? null : flashEndsAt?.toUtc();
           values = {
             'name': name.trim(),
             'description': description.trim(),
@@ -183,16 +235,26 @@ class EditorViewModel extends ChangeNotifier {
             'restaurant_id': args.restaurant!.id,
             'category_id': categoryId,
             'available': enabled,
+            if (saleCents != args.product?.salePriceCents)
+              'sale_price_cents': saleCents,
+            if (flashDuration == null &&
+                end != args.product?.flashEndsAt?.toUtc())
+              'flash_ends_at': end?.toIso8601String(),
+            if (isNew != (args.product?.isNew ?? false)) 'is_new': isNew,
             'updated_at': DateTime.now().toUtc().toIso8601String(),
           };
       }
-      if (photoChanged && args.table != 'categories') {
-        if (photo != null && _uploadedUrl == null) {
-          status = 'Enviando foto…';
-          if (!_disposed) notifyListeners();
-          _uploadedUrl = await photos.upload(photo!);
-        }
-        values['image_url'] = _uploadedUrl;
+      if (args.table != 'categories') {
+        await _saveImage(values, 'image_url', _cover);
+      }
+      if (args.table == 'restaurants') {
+        await _saveImage(values, 'logo_url', _logo);
+      }
+      if (args.table == 'products' && flashDuration != null) {
+        final end = _pendingFlashEnd ??= DateTime.now().toUtc().add(
+          flashDuration,
+        );
+        values['flash_ends_at'] = end.toIso8601String();
       }
       status = 'Salvando…';
       if (!_disposed) notifyListeners();

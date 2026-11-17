@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/app_services.dart';
+import '../../core/theme/app_theme.dart';
 import '../../data/remote/catalog_repository.dart';
 import '../../domain/catalog.dart';
 import '../../shared/widgets/catalog_widgets.dart';
@@ -233,14 +234,22 @@ class EditorView extends StatefulWidget {
   State<EditorView> createState() => _EditorViewState();
 }
 
+enum _PromotionMode { none, regular, flash }
+
 class _EditorViewState extends State<EditorView> {
   final _form = GlobalKey<FormState>();
   final _name = TextEditingController(),
       _description = TextEditingController(),
-      _price = TextEditingController();
+      _price = TextEditingController(),
+      _salePrice = TextEditingController(),
+      _flashMinutes = TextEditingController(),
+      _menuTitle = TextEditingController(),
+      _menuAccent = TextEditingController();
   late final EditorViewModel _model;
+  _PromotionMode _promotion = _PromotionMode.none;
+  DateTime? _flashEndsAt;
   String? _category;
-  bool _enabled = false, _dirty = false, _leaving = false;
+  bool _enabled = false, _isNew = false, _dirty = false, _leaving = false;
   @override
   void initState() {
     super.initState();
@@ -250,6 +259,8 @@ class _EditorViewState extends State<EditorView> {
       _name.text = a.restaurant?.name ?? '';
       _description.text = a.restaurant?.description ?? '';
       _enabled = a.restaurant?.published ?? false;
+      _menuTitle.text = a.restaurant?.menuTitle ?? '';
+      _menuAccent.text = a.restaurant?.menuAccent ?? '';
     } else if (a.table == 'categories') {
       _name.text = a.category?.name ?? '';
     } else {
@@ -262,6 +273,14 @@ class _EditorViewState extends State<EditorView> {
                 .replaceAll('.', ',');
       _category = a.product?.categoryId;
       _enabled = a.product?.available ?? true;
+      _isNew = a.product?.isNew ?? false;
+      _flashEndsAt = a.product?.flashEndsAt;
+      if (a.product?.salePriceCents case final sale?) {
+        _salePrice.text = Product.formatPrice(sale).substring(3);
+        _promotion = _flashEndsAt == null
+            ? _PromotionMode.regular
+            : _PromotionMode.flash;
+      }
       _model.loadCategories();
     }
   }
@@ -272,6 +291,10 @@ class _EditorViewState extends State<EditorView> {
     _name.dispose();
     _description.dispose();
     _price.dispose();
+    _salePrice.dispose();
+    _flashMinutes.dispose();
+    _menuTitle.dispose();
+    _menuAccent.dispose();
     super.dispose();
   }
 
@@ -291,12 +314,21 @@ class _EditorViewState extends State<EditorView> {
     if (!_form.currentState!.validate()) {
       return;
     }
+    final isFlash = _promotion == _PromotionMode.flash;
+    final minutes = isFlash ? int.tryParse(_flashMinutes.text.trim()) : null;
+    final title = _menuTitle.text.trim();
     final ok = await _model.save(
       name: _name.text,
       description: _description.text,
       price: _price.text,
       categoryId: _category,
       enabled: _enabled,
+      salePrice: _promotion == _PromotionMode.none ? null : _salePrice.text,
+      flashEndsAt: isFlash ? _flashEndsAt : null,
+      flashDuration: minutes == null ? null : Duration(minutes: minutes),
+      isNew: _isNew,
+      menuAccent: Rules.menuAccent(_menuAccent.text),
+      menuTitle: title.isEmpty ? null : title,
     );
     if (ok && mounted) {
       _finish();
@@ -314,6 +346,223 @@ class _EditorViewState extends State<EditorView> {
     if (ok && mounted) {
       _finish();
     }
+  }
+
+  Widget _imageEditor({required String label, bool logo = false}) {
+    final photo = logo ? _model.logo : _model.photo;
+    final url = logo ? _model.logoUrl : _model.photoUrl;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (photo != null || url != null)
+          SizedBox(
+            width: logo ? 96 : double.infinity,
+            child: MenuPhoto(
+              bytes: photo?.bytes,
+              url: url,
+              width: logo ? 96 : null,
+              height: logo ? 96 : 180,
+              fit: logo ? BoxFit.contain : BoxFit.cover,
+              label: 'Prévia de ${label.toLowerCase()}',
+            ),
+          ),
+        Wrap(
+          spacing: 8,
+          children: [
+            OutlinedButton.icon(
+              onPressed: _model.busy
+                  ? null
+                  : () async {
+                      final changed = await _model.selectPhoto(logo: logo);
+                      if (mounted && changed) setState(() => _dirty = true);
+                    },
+              icon: const Icon(Icons.add_photo_alternate_outlined),
+              label: Text('Escolher ${label.toLowerCase()}'),
+            ),
+            if (photo != null || url != null)
+              TextButton(
+                onPressed: _model.busy
+                    ? null
+                    : () {
+                        _model.removePhoto(logo: logo);
+                        setState(() => _dirty = true);
+                      },
+                child: Text('Remover ${label.toLowerCase()}'),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _brandingFields() {
+    const palettes = {
+      'Terracota': '',
+      'Oliva': '#50642A',
+      'Vinho': '#852545',
+      'Azul': '#245D81',
+    };
+    return [
+      const SectionTitle('Personalizar cardápio'),
+      _imageEditor(label: 'Logo', logo: true),
+      const SizedBox(height: 12),
+      TextFormField(
+        controller: _menuTitle,
+        enabled: !_model.busy,
+        maxLength: 120,
+        decoration: const InputDecoration(
+          labelText: 'Título do cardápio (opcional)',
+          hintText: 'Nome do restaurante',
+          border: OutlineInputBorder(),
+        ),
+      ),
+      Text('Cor do cardápio', style: Theme.of(context).textTheme.titleSmall),
+      const SizedBox(height: 8),
+      ValueListenableBuilder(
+        valueListenable: _menuAccent,
+        builder: (context, value, _) => Wrap(
+          spacing: 8,
+          runSpacing: 4,
+          children: [
+            for (final palette in palettes.entries)
+              ChoiceChip(
+                label: Text(palette.key),
+                avatar: CircleAvatar(
+                  backgroundColor: AppTheme.menuSeed(palette.value),
+                ),
+                showCheckmark: false,
+                selected: value.text.trim().toUpperCase() == palette.value,
+                onSelected: _model.busy
+                    ? null
+                    : (_) => setState(() {
+                        _menuAccent.text = palette.value;
+                        _dirty = true;
+                      }),
+              ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 8),
+      TextFormField(
+        controller: _menuAccent,
+        enabled: !_model.busy,
+        textCapitalization: TextCapitalization.characters,
+        validator: (value) {
+          final hex = value?.trim() ?? '';
+          return hex.isEmpty || Rules.menuAccent(hex) != null
+              ? null
+              : 'Use uma cor no formato #A63D24.';
+        },
+        decoration: const InputDecoration(
+          labelText: 'Código hexadecimal (opcional)',
+          hintText: '#A63D24',
+          border: OutlineInputBorder(),
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _promotionFields() {
+    final endsAt = _flashEndsAt;
+    final localizations = MaterialLocalizations.of(context);
+    final localEnd = endsAt?.toLocal();
+    final existingDeadline = localEnd == null
+        ? 'A contagem começa ao salvar.'
+        : endsAt!.isAfter(DateTime.now())
+        ? 'Término atual: ${localizations.formatShortDate(localEnd)} às '
+              '${localizations.formatTimeOfDay(TimeOfDay.fromDateTime(localEnd), alwaysUse24HourFormat: true)}.'
+        : 'Promoção encerrada. Informe outra duração para reativar.';
+    return [
+      const SectionTitle('Promoções e novidades'),
+      DropdownButtonFormField<_PromotionMode>(
+        initialValue: _promotion,
+        isExpanded: true,
+        decoration: const InputDecoration(
+          labelText: 'Tipo de promoção',
+          border: OutlineInputBorder(),
+        ),
+        items: const [
+          DropdownMenuItem(
+            value: _PromotionMode.none,
+            child: Text('Sem promoção'),
+          ),
+          DropdownMenuItem(
+            value: _PromotionMode.regular,
+            child: Text('Promoção'),
+          ),
+          DropdownMenuItem(
+            value: _PromotionMode.flash,
+            child: Text('Promoção-relâmpago'),
+          ),
+        ],
+        onChanged: _model.busy
+            ? null
+            : (value) {
+                if (value == null) return;
+                setState(() {
+                  _promotion = value;
+                  _dirty = true;
+                });
+              },
+      ),
+      if (_promotion != _PromotionMode.none) ...[
+        const SizedBox(height: 12),
+        TextFormField(
+          controller: _salePrice,
+          enabled: !_model.busy,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          validator: (value) {
+            final sale = Rules.cents(value ?? '');
+            final normal = Rules.cents(_price.text);
+            return sale != null && normal != null && sale < normal
+                ? null
+                : 'Informe um valor menor que o preço normal.';
+          },
+          decoration: const InputDecoration(
+            labelText: 'Preço promocional',
+            prefixText: 'R\$ ',
+            border: OutlineInputBorder(),
+          ),
+        ),
+      ],
+      if (_promotion == _PromotionMode.flash) ...[
+        const SizedBox(height: 12),
+        TextFormField(
+          controller: _flashMinutes,
+          enabled: !_model.busy,
+          keyboardType: TextInputType.number,
+          onChanged: (_) => _model.resetFlashDeadline(),
+          validator: (value) {
+            final text = value?.trim() ?? '';
+            if (text.isEmpty && endsAt != null) return null;
+            final minutes = int.tryParse(text);
+            return minutes != null && minutes >= 1 && minutes <= 525600
+                ? null
+                : 'Informe uma duração de 1 a 525.600 minutos.';
+          },
+          decoration: InputDecoration(
+            labelText: endsAt == null
+                ? 'Duração da oferta em minutos'
+                : 'Nova duração em minutos (opcional)',
+            hintText: 'Ex.: 60',
+            helperText: existingDeadline,
+            helperMaxLines: 3,
+            border: const OutlineInputBorder(),
+          ),
+        ),
+      ],
+      SwitchListTile(
+        contentPadding: EdgeInsets.zero,
+        title: const Text('Mostrar selo NEW'),
+        value: _isNew,
+        onChanged: _model.busy
+            ? null
+            : (value) => setState(() {
+                _isNew = value;
+                _dirty = true;
+              }),
+      ),
+    ];
   }
 
   @override
@@ -353,156 +602,133 @@ class _EditorViewState extends State<EditorView> {
                   setState(() => _dirty = true);
                 }
               },
-              child: ListView(
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24),
-                children: [
-                  TextFormField(
-                    controller: _name,
-                    enabled: !_model.busy,
-                    validator: (v) => Rules.name(
-                      v,
-                      min: table == 'restaurants' ? 2 : 1,
-                      max: table == 'categories' ? 80 : 120,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextFormField(
+                      controller: _name,
+                      enabled: !_model.busy,
+                      validator: (v) => Rules.name(
+                        v,
+                        min: table == 'restaurants' ? 2 : 1,
+                        max: table == 'categories' ? 80 : 120,
+                      ),
+                      decoration: const InputDecoration(
+                        labelText: 'Nome',
+                        border: OutlineInputBorder(),
+                      ),
                     ),
-                    decoration: const InputDecoration(
-                      labelText: 'Nome',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  if (table != 'categories') ...[
-                    MenuPhoto(
-                      url: _model.photoUrl,
-                      bytes: _model.photo?.bytes,
-                      label: 'Prévia da foto',
-                    ),
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        OutlinedButton.icon(
-                          onPressed: _model.busy
-                              ? null
-                              : () async {
-                                  final changed = await _model.selectPhoto();
-                                  if (mounted && changed) {
-                                    setState(() => _dirty = true);
-                                  }
-                                },
-                          icon: const Icon(Icons.add_photo_alternate_outlined),
-                          label: const Text('Escolher foto'),
+                    const SizedBox(height: 16),
+                    if (table != 'categories') ...[
+                      _imageEditor(
+                        label: table == 'restaurants' ? 'Foto de capa' : 'Foto',
+                      ),
+                      const Text(
+                        'Foto opcional • JPG, PNG ou WebP • até 5 MB após otimização',
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _description,
+                        enabled: !_model.busy,
+                        maxLines: 4,
+                        maxLength: 2000,
+                        decoration: InputDecoration(
+                          labelText: table == 'products'
+                              ? 'Descrição e ingredientes'
+                              : 'Descrição',
+                          border: const OutlineInputBorder(),
                         ),
-                        if (_model.photo != null || _model.photoUrl != null)
-                          TextButton(
-                            onPressed: _model.busy
-                                ? null
-                                : () {
-                                    _model.removePhoto();
-                                    setState(() => _dirty = true);
-                                  },
-                            child: const Text('Remover foto'),
-                          ),
-                      ],
-                    ),
-                    const Text(
-                      'Foto opcional • JPG, PNG ou WebP • até 5 MB após otimização',
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _description,
-                      enabled: !_model.busy,
-                      maxLines: 4,
-                      maxLength: 2000,
-                      decoration: InputDecoration(
-                        labelText: table == 'products'
-                            ? 'Descrição e ingredientes'
-                            : 'Descrição',
-                        border: const OutlineInputBorder(),
                       ),
+                      const SizedBox(height: 16),
+                    ],
+                    if (table == 'products') ...[
+                      DropdownButtonFormField<String>(
+                        initialValue:
+                            _model.categories.any((c) => c.id == _category)
+                            ? _category
+                            : null,
+                        isExpanded: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Categoria',
+                          border: OutlineInputBorder(),
+                        ),
+                        items: _model.categories
+                            .map(
+                              (c) => DropdownMenuItem(
+                                value: c.id,
+                                child: Text(c.name),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: _model.busy
+                            ? null
+                            : (v) => setState(() {
+                                _category = v;
+                                _dirty = true;
+                              }),
+                        validator: (v) =>
+                            v == null ? 'Escolha uma categoria.' : null,
+                      ),
+                      if (!_model.busy && _model.categories.isEmpty)
+                        const Notice(
+                          'Cadastre uma categoria antes de adicionar produtos.',
+                        ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _price,
+                        enabled: !_model.busy,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        validator: (v) => Rules.cents(v ?? '') == null
+                            ? 'Informe um preço válido. Exemplo: 25,90.'
+                            : null,
+                        decoration: const InputDecoration(
+                          labelText: 'Preço em reais',
+                          prefixText: 'R\$ ',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      ..._promotionFields(),
+                    ],
+                    if (table == 'restaurants') ..._brandingFields(),
+                    if (table != 'categories')
+                      SwitchListTile(
+                        title: Text(
+                          table == 'restaurants'
+                              ? 'Publicar cardápio'
+                              : 'Produto disponível',
+                        ),
+                        value: _enabled,
+                        onChanged: _model.busy
+                            ? null
+                            : (v) => setState(() {
+                                _enabled = v;
+                                _dirty = true;
+                              }),
+                      ),
+                    if (_model.error != null)
+                      Notice(_model.error!, error: true),
+                    if (_model.busy && _model.status != null) ...[
+                      const LinearProgressIndicator(),
+                      Text(_model.status!),
+                    ],
+                    const SizedBox(height: 20),
+                    BusyButton(
+                      label: 'Salvar',
+                      busy: _model.busy,
+                      onPressed: _save,
                     ),
-                    const SizedBox(height: 16),
+                    if (_model.id != null)
+                      TextButton.icon(
+                        onPressed: _model.busy ? null : _delete,
+                        icon: const Icon(Icons.delete_outline),
+                        label: Text('Excluir $type'),
+                      ),
                   ],
-                  if (table == 'products') ...[
-                    DropdownButtonFormField<String>(
-                      initialValue:
-                          _model.categories.any((c) => c.id == _category)
-                          ? _category
-                          : null,
-                      isExpanded: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Categoria',
-                        border: OutlineInputBorder(),
-                      ),
-                      items: _model.categories
-                          .map(
-                            (c) => DropdownMenuItem(
-                              value: c.id,
-                              child: Text(c.name),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: _model.busy
-                          ? null
-                          : (v) => setState(() {
-                              _category = v;
-                              _dirty = true;
-                            }),
-                      validator: (v) =>
-                          v == null ? 'Escolha uma categoria.' : null,
-                    ),
-                    if (!_model.busy && _model.categories.isEmpty)
-                      const Notice(
-                        'Cadastre uma categoria antes de adicionar produtos.',
-                      ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _price,
-                      enabled: !_model.busy,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      validator: (v) => Rules.cents(v ?? '') == null
-                          ? 'Informe um preço válido. Exemplo: 25,90.'
-                          : null,
-                      decoration: const InputDecoration(
-                        labelText: 'Preço em reais',
-                        prefixText: 'R\$ ',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ],
-                  if (table != 'categories')
-                    SwitchListTile(
-                      title: Text(
-                        table == 'restaurants'
-                            ? 'Publicar cardápio'
-                            : 'Produto disponível',
-                      ),
-                      value: _enabled,
-                      onChanged: _model.busy
-                          ? null
-                          : (v) => setState(() {
-                              _enabled = v;
-                              _dirty = true;
-                            }),
-                    ),
-                  if (_model.error != null) Notice(_model.error!, error: true),
-                  if (_model.busy && _model.status != null) ...[
-                    const LinearProgressIndicator(),
-                    Text(_model.status!),
-                  ],
-                  const SizedBox(height: 20),
-                  BusyButton(
-                    label: 'Salvar',
-                    busy: _model.busy,
-                    onPressed: _save,
-                  ),
-                  if (_model.id != null)
-                    TextButton.icon(
-                      onPressed: _model.busy ? null : _delete,
-                      icon: const Icon(Icons.delete_outline),
-                      label: Text('Excluir $type'),
-                    ),
-                ],
+                ),
               ),
             ),
           ),

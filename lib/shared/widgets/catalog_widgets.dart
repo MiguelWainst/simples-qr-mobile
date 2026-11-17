@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../domain/catalog.dart';
 import 'menu_photo.dart';
+import 'product_offer.dart';
 
 class ContentWidth extends StatelessWidget {
   const ContentWidth({required this.child, super.key});
@@ -90,48 +91,66 @@ class BusyButton extends StatelessWidget {
   );
 }
 
-class PriceLabel extends StatelessWidget {
-  const PriceLabel(this.product, {super.key});
-  final Product product;
-  @override
-  Widget build(BuildContext context) => Text(
-    product.price,
-    style: Theme.of(context).textTheme.titleMedium
-        ?.copyWith(color: Theme.of(context).colorScheme.primary),
-  );
-}
-
 class ProductTile extends StatelessWidget {
   const ProductTile({required this.product, required this.onTap, super.key});
   final Product product;
   final VoidCallback onTap;
   @override
   Widget build(BuildContext context) => Card(
-    child: ListTile(
-      contentPadding: const EdgeInsets.all(16),
+    margin: const EdgeInsets.only(bottom: 10),
+    clipBehavior: Clip.antiAlias,
+    child: InkWell(
       onTap: onTap,
-      leading: MenuPhoto(
-        url: product.imageUrl,
-        width: 56,
-        height: 56,
-        label: product.name,
-      ),
-      title: Text(product.name),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (product.description.isNotEmpty)
-            Text(
-              product.description,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            MenuPhoto(
+              url: product.imageUrl,
+              width: 76,
+              height: 76,
+              label: product.name,
             ),
-          const SizedBox(height: 8),
-          PriceLabel(product),
-          if (!product.available) const Text('Indisponível'),
-        ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          product.name,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                      if (product.isNew) ...[
+                        const SizedBox(width: 6),
+                        const NewProductBadge(),
+                      ],
+                    ],
+                  ),
+                  if (product.description.isNotEmpty)
+                    Text(
+                      product.description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  const SizedBox(height: 8),
+                  PriceLabel(product),
+                  if (!product.available) const Text('Indisponível'),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
-      trailing: const Icon(Icons.chevron_right),
     ),
   );
 }
@@ -149,7 +168,7 @@ class RestaurantTile extends StatelessWidget {
     child: ListTile(
       contentPadding: const EdgeInsets.all(16),
       leading: MenuPhoto(
-        url: restaurant.imageUrl,
+        url: restaurant.logoUrl ?? restaurant.imageUrl,
         width: 56,
         height: 56,
         label: restaurant.name,

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../core/app_services.dart';
+import '../../core/theme/app_theme.dart';
 import '../../data/remote/catalog_repository.dart';
 import '../../domain/catalog.dart';
 import '../../shared/widgets/catalog_widgets.dart';
 import '../../shared/widgets/menu_photo.dart';
+import '../../shared/widgets/product_offer.dart';
 
 class FavoritesView extends StatefulWidget {
   const FavoritesView({required this.services, super.key});
@@ -228,34 +230,56 @@ class _ProductViewState extends State<ProductView> {
   @override
   Widget build(BuildContext context) {
     final p = widget.args.product;
-    return Scaffold(
-      appBar: AppBar(title: const Text('Detalhes do produto')),
-      body: ContentWidth(
-        child: ListView(
-          padding: const EdgeInsets.all(24),
-          children: [
-            MenuPhoto(url: p.imageUrl, height: 260, label: p.name),
-            SectionTitle(p.name),
-            PriceLabel(p),
-            const SizedBox(height: 24),
-            Text(
-              p.description.isEmpty
-                  ? 'Descrição não informada pelo restaurante.'
-                  : p.description,
-            ),
-            if (widget.args.offline)
-              const Notice(
-                'Cópia salva. Confirme preço, ingredientes e disponibilidade no restaurante.',
+    return Theme(
+      data: AppTheme.build(
+        Theme.of(context).brightness,
+        menuAccent: widget.args.menuAccent,
+      ),
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Detalhes do produto')),
+        body: ContentWidth(
+          child: ListView(
+            padding: const EdgeInsets.all(24),
+            children: [
+              MenuPhoto(url: p.imageUrl, height: 260, label: p.name),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        p.name,
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    ),
+                    if (p.isNew) const NewProductBadge(),
+                  ],
+                ),
               ),
-            if (!p.available) const Notice('Produto indisponível no momento.'),
-            if (_error != null) Notice(_error!, error: true),
-            const SizedBox(height: 24),
-            BusyButton(
-              label: _saved ? 'Remover dos favoritos' : 'Salvar nos favoritos',
-              busy: _busy,
-              onPressed: _toggle,
-            ),
-          ],
+              PriceLabel(p),
+              const SizedBox(height: 24),
+              Text(
+                p.description.isEmpty
+                    ? 'Descrição não informada pelo restaurante.'
+                    : p.description,
+              ),
+              if (widget.args.offline)
+                const Notice(
+                  'Cópia salva. Confirme preço, ingredientes e disponibilidade no restaurante.',
+                ),
+              if (!p.available)
+                const Notice('Produto indisponível no momento.'),
+              if (_error != null) Notice(_error!, error: true),
+              const SizedBox(height: 24),
+              BusyButton(
+                label: _saved
+                    ? 'Remover dos favoritos'
+                    : 'Salvar nos favoritos',
+                busy: _busy,
+                onPressed: _toggle,
+              ),
+            ],
+          ),
         ),
       ),
     );

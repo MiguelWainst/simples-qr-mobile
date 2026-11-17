@@ -11,10 +11,15 @@ class Restaurant {
     this.description = '',
     this.published = false,
     this.imageUrl,
+    this.logoUrl,
+    this.menuAccent,
+    this.menuTitle,
   });
   final String id, ownerId, name, slug, description;
   final bool published;
   final String? imageUrl;
+  final String? logoUrl, menuAccent, menuTitle;
+  String get displayTitle => menuTitle ?? name;
   factory Restaurant.fromMap(Json m) => Restaurant(
     id: m['id'] as String,
     ownerId: m['owner_id'] as String,
@@ -23,6 +28,9 @@ class Restaurant {
     description: m['description'] as String? ?? '',
     published: m['published'] as bool? ?? false,
     imageUrl: m['image_url'] as String?,
+    logoUrl: m['logo_url'] as String?,
+    menuAccent: m['menu_accent'] as String?,
+    menuTitle: m['menu_title'] as String?,
   );
   Json toMap() => {
     'id': id,
@@ -32,6 +40,9 @@ class Restaurant {
     'description': description,
     'published': published,
     'image_url': imageUrl,
+    'logo_url': logoUrl,
+    'menu_accent': menuAccent,
+    'menu_title': menuTitle,
   };
   String toJson() => jsonEncode(toMap());
   factory Restaurant.fromJson(String value) =>
@@ -74,13 +85,28 @@ class Product {
     this.description = '',
     this.available = true,
     this.imageUrl,
+    this.salePriceCents,
+    this.flashEndsAt,
+    this.isNew = false,
   });
   final String id, restaurantId, categoryId, name, description;
   final int priceCents;
   final bool available;
   final String? imageUrl;
-  String get price =>
-      'R\$ ${(priceCents / 100).toStringAsFixed(2).replaceAll('.', ',')}';
+  final int? salePriceCents;
+  final DateTime? flashEndsAt;
+  final bool isNew;
+
+  String get price => formatPrice(priceCents);
+  int? activeSaleAt(DateTime now) {
+    final sale = salePriceCents;
+    if (sale == null || sale < 0 || sale >= priceCents) return null;
+    final end = flashEndsAt;
+    return end == null || end.isAfter(now) ? sale : null;
+  }
+
+  static String formatPrice(int cents) =>
+      'R\$ ${(cents / 100).toStringAsFixed(2).replaceAll('.', ',')}';
   factory Product.fromMap(Json m) => Product(
     id: m['id'] as String,
     restaurantId: m['restaurant_id'] as String,
@@ -90,6 +116,9 @@ class Product {
     description: m['description'] as String? ?? '',
     available: m['available'] as bool? ?? true,
     imageUrl: m['image_url'] as String?,
+    salePriceCents: m['sale_price_cents'] as int?,
+    flashEndsAt: DateTime.tryParse(m['flash_ends_at'] as String? ?? ''),
+    isNew: m['is_new'] as bool? ?? false,
   );
   Json toMap() => {
     'id': id,
@@ -100,6 +129,9 @@ class Product {
     'price_cents': priceCents,
     'available': available,
     'image_url': imageUrl,
+    'sale_price_cents': salePriceCents,
+    'flash_ends_at': flashEndsAt?.toUtc().toIso8601String(),
+    'is_new': isNew,
   };
   String toJson() => jsonEncode(toMap());
   factory Product.fromJson(String value) =>
@@ -107,6 +139,11 @@ class Product {
 }
 
 abstract final class Rules {
+  static String? menuAccent(String value) {
+    final normalized = value.trim().toUpperCase();
+    return RegExp(r'^#[0-9A-F]{6}$').hasMatch(normalized) ? normalized : null;
+  }
+
   static String? name(String? value, {int min = 1, int max = 120}) =>
       (value ?? '').trim().length < min || (value ?? '').trim().length > max
       ? 'Use de $min a $max caracteres.'

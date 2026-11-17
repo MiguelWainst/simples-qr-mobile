@@ -24,9 +24,10 @@ class MenuArgs {
 }
 
 class ProductArgs {
-  const ProductArgs(this.product, {this.offline = false});
+  const ProductArgs(this.product, {this.offline = false, this.menuAccent});
   final Product product;
   final bool offline;
+  final String? menuAccent;
 }
 
 class AdminArgs {
