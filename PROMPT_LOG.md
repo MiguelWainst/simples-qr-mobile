@@ -30,6 +30,10 @@ Ainda não realizadas pelo autor. O mínimo final é duas refatorações reais c
 
 ## Lições
 
+## #04 — 17/11/2026 — Promoções e identidade do cardápio
+
+O autor pediu desconto com preço antigo riscado, promoção-relâmpago com raio animado e duração configurável, selo NEW e personalização do cardápio. A IA implementou os controles no editor, a apresentação no catálogo, a migração incremental do banco e os testes de expiração e cache. O término é salvo como uma data em UTC, e a contagem usa o relógio do aparelho mesmo ao consultar uma cópia offline.
+
 ## #03 — 16/11/2026 — Fotos e confirmação de e-mail
 
 **Pedido do autor:** implementar a parte 2, carregar fotos sem travar e investigar e-mail de cadastro que não chega.

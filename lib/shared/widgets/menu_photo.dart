@@ -9,6 +9,7 @@ class MenuPhoto extends StatelessWidget {
     this.width,
     this.height = 200,
     this.label = 'Foto do cardápio',
+    this.fit = BoxFit.cover,
     super.key,
   });
   final String? url;
@@ -16,6 +17,7 @@ class MenuPhoto extends StatelessWidget {
   final double? width;
   final double height;
   final String label;
+  final BoxFit fit;
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +34,14 @@ class MenuPhoto extends StatelessWidget {
     if (bytes != null) {
       content = Image.memory(
         bytes!,
-        fit: BoxFit.cover,
+        fit: fit,
         cacheWidth: decodeWidth,
         errorBuilder: (_, _, _) => fallback,
       );
     } else if (url != null && url!.isNotEmpty) {
       content = Image.network(
         url!,
-        fit: BoxFit.cover,
+        fit: fit,
         cacheWidth: decodeWidth,
         errorBuilder: (_, _, _) => fallback,
         loadingBuilder: (context, child, progress) => progress == null

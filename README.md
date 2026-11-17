@@ -35,6 +35,11 @@ O autor informou que criou o projeto e executou `supabase/migrations/001_initial
 
 Para habilitar fotos, execute `supabase/migrations/002_menu_photos.sql` no SQL Editor. Veja [ativação de fotos e diagnóstico de e-mails](docs/PARTE_2.md).
 
+Para habilitar promoções e personalização, execute [`003_menu_promotions_and_branding.sql`](supabase/migrations/003_menu_promotions_and_branding.sql) no SQL Editor após a migração de fotos. As colunas são adicionadas aos registros existentes.
+
+- Em **Meus restaurantes → Editar restaurante → Personalizar cardápio**, envie a logo e escolha título e cor. A foto de capa é opcional e tem campo próprio.
+- Em **Produtos → Editar produto**, escolha promoção regular ou relâmpago, informe o preço promocional e, no segundo caso, a duração em minutos. O horário de término é salvo no produto, e o cardápio volta a exibir o preço normal ao fim da contagem. O selo **NEW** pode ser ligado ou desligado de forma independente.
+
 Em **Authentication > URL Configuration**, cadastre:
 - desenvolvimento web: `http://localhost:8080/`;
 - seu endereço HTTPS de produção;
