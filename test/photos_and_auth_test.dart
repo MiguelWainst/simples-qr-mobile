@@ -23,6 +23,10 @@ void main() {
       final client = SupabaseClient(
         'https://example.supabase.co',
         'public-test-key',
+        authOptions: AuthClientOptions(
+          pkceAsyncStorage: _MemoryStorage(),
+          autoRefreshToken: false,
+        ),
         httpClient: MockClient(
           (_) async => http.Response(
             jsonEncode({
@@ -134,6 +138,10 @@ void main() {
       final client = SupabaseClient(
         'https://example.supabase.co',
         'public-test-key',
+        authOptions: AuthClientOptions(
+          pkceAsyncStorage: _MemoryStorage(),
+          autoRefreshToken: false,
+        ),
         httpClient: MockClient((request) async {
           requests.add(request);
           if (request.url.path.endsWith('/signup')) {
@@ -178,6 +186,10 @@ void main() {
     final client = SupabaseClient(
       'https://example.supabase.co',
       'public-test-key',
+      authOptions: AuthClientOptions(
+        pkceAsyncStorage: _MemoryStorage(),
+        autoRefreshToken: false,
+      ),
       httpClient: MockClient(
         (_) async => http.Response(
           jsonEncode({
@@ -236,6 +248,21 @@ class _Catalog extends CatalogRepository {
   Future<void> save(String table, Json values, {String? id}) async {
     if (fail) throw const FormatException('Falha ao salvar');
     saved = values;
+  }
+}
+
+class _MemoryStorage extends GotrueAsyncStorage {
+  final values = <String, String>{};
+  @override
+  Future<String?> getItem({required String key}) async => values[key];
+  @override
+  Future<void> setItem({required String key, required String value}) async {
+    values[key] = value;
+  }
+
+  @override
+  Future<void> removeItem({required String key}) async {
+    values.remove(key);
   }
 }
 
