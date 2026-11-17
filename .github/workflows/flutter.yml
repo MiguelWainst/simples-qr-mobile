@@ -24,8 +24,6 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
-      - name: Registrar lock resolvido
-        run: python3 -c 'import json,pathlib; print("LOCK_SNAPSHOT=" + json.dumps(pathlib.Path("pubspec.lock").read_text()))'
       - name: Format source
         run: dart format --output=none --set-exit-if-changed lib test
       - run: flutter analyze

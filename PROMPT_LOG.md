@@ -30,6 +30,14 @@ Ainda não realizadas pelo autor. O mínimo final é duas refatorações reais c
 
 ## Lições
 
+## #03 — 16/11/2026 — Fotos e confirmação de e-mail
+
+**Pedido do autor:** implementar a parte 2, carregar fotos sem travar e investigar e-mail de cadastro que não chega.
+
+**Execução pela IA:** seleção e redução de fotos, prévia, upload assíncrono com timeout, fotos no catálogo, migração incremental de Storage e colunas opcionais; reenvio de confirmação com cooldown e erros específicos; testes automatizados e documentação de configuração do backend. PR #47.
+
+**Limites:** sem credenciais administrativas Supabase, não foi configurado SMTP nem aplicado SQL remoto. A documentação oficial informa as restrições do serviço padrão de e-mail. Não atribuir uma causa específica à entrega sem logs do projeto. Não prometer ausência absoluta de travamentos sem testes nos aparelhos. Fotos antigas podem ficar no Storage e fotos offline não são garantidas. Estas alterações não são refatorações manuais do aluno.
+
 Uso de IA não substitui compreensão na arguição. Geração de código, execução de testes e validação humana são etapas diferentes e devem ter evidências separadas.
 
 ## #02 — 26/10/2026 — Projeto final

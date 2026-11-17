@@ -72,8 +72,9 @@ class PhotoRepository {
 
   Future<String> upload(SelectedPhoto photo) async {
     final user = client.auth.currentUser;
-    if (user == null)
+    if (user == null) {
       throw const FormatException('Entre novamente para enviar a foto.');
+    }
     final random = Random.secure();
     final token = List.generate(
       16,

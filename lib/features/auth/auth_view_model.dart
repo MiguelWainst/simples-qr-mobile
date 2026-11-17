@@ -19,6 +19,7 @@ class AuthViewModel extends ChangeNotifier {
       kIsWeb ? Uri.base.origin + Uri.base.path : 'simplesqr://auth-callback';
 
   void _startCooldown() {
+    if (_disposed) return;
     resendSeconds = 60;
     _resendTimer?.cancel();
     _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -51,8 +52,9 @@ class AuthViewModel extends ChangeNotifier {
       _startCooldown();
     } catch (e) {
       error = friendlyError(e);
-      if (e is AuthException && e.code == 'over_email_send_rate_limit')
+      if (e is AuthException && e.code == 'over_email_send_rate_limit') {
         _startCooldown();
+      }
     } finally {
       busy = false;
       if (!_disposed) notifyListeners();

@@ -384,8 +384,9 @@ class _EditorViewState extends State<EditorView> {
                               ? null
                               : () async {
                                   final changed = await _model.selectPhoto();
-                                  if (mounted && changed)
+                                  if (mounted && changed) {
                                     setState(() => _dirty = true);
+                                  }
                                 },
                           icon: const Icon(Icons.add_photo_alternate_outlined),
                           label: const Text('Escolher foto'),

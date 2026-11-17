@@ -12,13 +12,13 @@ Requisitos: Flutter 3.47.6 / Dart 3.13, Chrome ou Android SDK.
 
 ```powershell
 git fetch origin
-git switch feat/projeto-final
+git switch main
 git pull --ff-only
 flutter pub get
 flutter run -d chrome --web-port 8080
 ```
 
-No primeiro acesso, informe a **Project URL** e a **chave pública publishable ou anon** do seu Supabase. Não use senha, secret ou service_role. A configuração é persistida neste aparelho. No Android, conecte um celular com depuração USB e execute `flutter run`.
+O app já inclui a URL e a chave pública do Supabase do projeto. Para usar outro backend, altere a conexão nas configurações ou use os parâmetros de build abaixo. Não use senha, secret ou service_role. No Android, conecte um celular com depuração USB e execute `flutter run`.
 
 Para distribuir o app conectado ao seu backend, configure durante o build:
 
@@ -33,6 +33,8 @@ URL e chave pública identificam o projeto; a autorização é feita pelas polí
 
 O autor informou que criou o projeto e executou `supabase/migrations/001_initial.sql` com sucesso. Não execute novamente em um banco que já tem essas tabelas.
 
+Para habilitar fotos, execute `supabase/migrations/002_menu_photos.sql` no SQL Editor. Veja [ativação de fotos e diagnóstico de e-mails](docs/PARTE_2.md).
+
 Em **Authentication > URL Configuration**, cadastre:
 - desenvolvimento web: `http://localhost:8080/`;
 - seu endereço HTTPS de produção;
@@ -43,7 +45,7 @@ Use a URL de produção como Site URL quando publicar. Mantenha a confirmação 
 ## Demonstração
 
 1. Abra a área do proprietário e crie/confirme sua conta.
-2. Adicione um restaurante com endereço como `cafe-do-miguel`.
+2. Adicione um restaurante com nome e descrição; o endereço é automático. Opcionalmente, escolha uma foto.
 3. Crie uma categoria e um produto com preço e ingredientes.
 4. Edite o restaurante e ative **Publicar cardápio**.
 5. Abra **Ver cardápio**; teste busca, categoria e favoritos.
