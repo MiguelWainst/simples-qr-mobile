@@ -138,15 +138,47 @@ String friendlyError(Object error) {
     return error.message;
   }
   if (error is AuthException) {
+    final details = error.message.toLowerCase();
+    if (details.contains('failed to fetch') ||
+        details.contains('socketexception') ||
+        details.contains('network')) {
+      return 'Não foi possível conectar ao servidor. Confira sua internet e tente novamente.';
+    }
+    if (error.code == 'over_email_send_rate_limit' ||
+        details.contains('rate limit') ||
+        error.statusCode == '429') {
+      return 'O limite de envio de e-mails foi atingido. Aguarde alguns minutos antes de tentar novamente.';
+    }
+    if (error.code == 'email_address_not_authorized' ||
+        details.contains('not authorized') ||
+        details.contains('error sending') ||
+        details.contains('smtp')) {
+      return 'O serviço de e-mail não conseguiu enviar a mensagem. O responsável pelo app precisa verificar a configuração de envio.';
+    }
     if (error.message.contains('Invalid login')) {
       return 'E-mail ou senha incorretos.';
     }
     if (error.message.contains('Email not confirmed')) {
       return 'Confirme seu e-mail antes de entrar.';
     }
-    return 'Não foi possível autenticar. Confira os dados e tente novamente. ${error.message}';
+    return 'Não foi possível autenticar. Confira os dados e tente novamente.';
+  }
+  if (error is StorageException) {
+    final details = error.message.toLowerCase();
+    if (details.contains('bucket') && details.contains('not found')) {
+      return 'O armazenamento de fotos ainda não foi ativado. Aplique a configuração de fotos no Supabase.';
+    }
+    if (details.contains('size') ||
+        details.contains('large') ||
+        error.statusCode == '413') {
+      return 'A foto é muito grande. Escolha uma imagem de até 5 MB.';
+    }
+    return 'Não foi possível enviar a foto. Sua edição foi mantida; tente salvar novamente.';
   }
   if (error is PostgrestException) {
+    if (error.code == 'PGRST204' && error.message.contains('image_url')) {
+      return 'As fotos ainda não foram ativadas no banco. Aplique a atualização de fotos no Supabase e tente salvar novamente.';
+    }
     if (error.code == '23505') {
       return 'Este endereço já está em uso. Escolha outro.';
     }

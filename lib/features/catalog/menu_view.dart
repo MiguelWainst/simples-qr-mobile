@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/app_services.dart';
 import '../../shared/widgets/catalog_widgets.dart';
+import '../../shared/widgets/menu_photo.dart';
 import 'catalog_view_model.dart';
 
 class MenuView extends StatefulWidget {
@@ -68,6 +69,11 @@ class _MenuViewState extends State<MenuView> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       if (m.restaurant != null) ...[
+                        if (m.restaurant!.imageUrl != null)
+                          MenuPhoto(
+                            url: m.restaurant!.imageUrl,
+                            label: m.restaurant!.name,
+                          ),
                         SectionTitle(m.restaurant!.name),
                         Text(m.restaurant!.description),
                         const SizedBox(height: 20),

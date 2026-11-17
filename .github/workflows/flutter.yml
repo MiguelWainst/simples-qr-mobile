@@ -71,6 +71,8 @@ jobs:
                   with urllib.request.urlopen(req, timeout=20) as response:
                       data = json.load(response)
                       print(path.split('?')[0] + ': HTTP ' + str(response.status))
+                      if path == '/auth/v1/settings':
+                          print('AUTH_SETTINGS=' + json.dumps({k: data.get(k) for k in ['mailer_autoconfirm', 'disable_signup', 'external']}))
               except urllib.error.HTTPError as error:
                   failed = True
                   print(path.split('?')[0] + ': HTTP ' + str(error.code))
