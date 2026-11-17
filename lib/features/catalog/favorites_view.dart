@@ -4,6 +4,7 @@ import '../../core/app_services.dart';
 import '../../data/remote/catalog_repository.dart';
 import '../../domain/catalog.dart';
 import '../../shared/widgets/catalog_widgets.dart';
+import '../../shared/widgets/menu_photo.dart';
 
 class FavoritesView extends StatefulWidget {
   const FavoritesView({required this.services, super.key});
@@ -233,14 +234,7 @@ class _ProductViewState extends State<ProductView> {
         child: ListView(
           padding: const EdgeInsets.all(24),
           children: [
-            Container(
-              height: 180,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: const Icon(Icons.restaurant, size: 80),
-            ),
+            MenuPhoto(url: p.imageUrl, height: 260, label: p.name),
             SectionTitle(p.name),
             PriceLabel(p),
             const SizedBox(height: 24),

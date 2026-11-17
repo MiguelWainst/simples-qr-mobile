@@ -76,6 +76,7 @@ class _AuthViewState extends State<AuthView> {
                       if (widget.mode != AuthMode.password)
                         TextFormField(
                           controller: _email,
+                          enabled: !_model!.busy,
                           keyboardType: TextInputType.emailAddress,
                           autofillHints: const [AutofillHints.email],
                           validator: Rules.email,
@@ -88,6 +89,7 @@ class _AuthViewState extends State<AuthView> {
                       if (widget.mode != AuthMode.recovery)
                         TextFormField(
                           controller: _password,
+                          enabled: !_model!.busy,
                           obscureText: !_visible,
                           autofillHints: [
                             widget.mode == AuthMode.login
@@ -125,6 +127,34 @@ class _AuthViewState extends State<AuthView> {
                         busy: _model!.busy,
                         onPressed: _submit,
                       ),
+                      if (_model!.needsConfirmation) ...[
+                        OutlinedButton.icon(
+                          onPressed: _model!.busy || _model!.resendSeconds > 0
+                              ? null
+                              : () => _model!.resendConfirmation(_email.text),
+                          icon: const Icon(Icons.mark_email_unread_outlined),
+                          label: Text(
+                            _model!.resendSeconds > 0
+                                ? 'Reenviar em ${_model!.resendSeconds}s'
+                                : 'Reenviar confirmação',
+                          ),
+                        ),
+                        const Text(
+                          'Não chegou? Confira se o endereço está correto e procure na pasta de spam. Se continuar, o envio de e-mails precisa ser verificado pelo responsável pelo app.',
+                        ),
+                      ],
+                      if (widget.mode == AuthMode.register)
+                        TextButton(
+                          onPressed: _model!.busy
+                              ? null
+                              : () => Navigator.pushReplacementNamed(
+                                  context,
+                                  '/login',
+                                ),
+                          child: const Text(
+                            'Já tenho conta / Já confirmei meu e-mail',
+                          ),
+                        ),
                       if (widget.mode == AuthMode.login) ...[
                         TextButton(
                           onPressed: () =>

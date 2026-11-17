@@ -10,9 +10,11 @@ class Restaurant {
     required this.slug,
     this.description = '',
     this.published = false,
+    this.imageUrl,
   });
   final String id, ownerId, name, slug, description;
   final bool published;
+  final String? imageUrl;
   factory Restaurant.fromMap(Json m) => Restaurant(
     id: m['id'] as String,
     ownerId: m['owner_id'] as String,
@@ -20,6 +22,7 @@ class Restaurant {
     slug: m['slug'] as String,
     description: m['description'] as String? ?? '',
     published: m['published'] as bool? ?? false,
+    imageUrl: m['image_url'] as String?,
   );
   Json toMap() => {
     'id': id,
@@ -28,6 +31,7 @@ class Restaurant {
     'slug': slug,
     'description': description,
     'published': published,
+    'image_url': imageUrl,
   };
   String toJson() => jsonEncode(toMap());
   factory Restaurant.fromJson(String value) =>
@@ -69,10 +73,12 @@ class Product {
     required this.priceCents,
     this.description = '',
     this.available = true,
+    this.imageUrl,
   });
   final String id, restaurantId, categoryId, name, description;
   final int priceCents;
   final bool available;
+  final String? imageUrl;
   String get price =>
       'R\$ ${(priceCents / 100).toStringAsFixed(2).replaceAll('.', ',')}';
   factory Product.fromMap(Json m) => Product(
@@ -83,6 +89,7 @@ class Product {
     priceCents: m['price_cents'] as int,
     description: m['description'] as String? ?? '',
     available: m['available'] as bool? ?? true,
+    imageUrl: m['image_url'] as String?,
   );
   Json toMap() => {
     'id': id,
@@ -92,6 +99,7 @@ class Product {
     'description': description,
     'price_cents': priceCents,
     'available': available,
+    'image_url': imageUrl,
   };
   String toJson() => jsonEncode(toMap());
   factory Product.fromJson(String value) =>

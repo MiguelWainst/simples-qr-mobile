@@ -5,6 +5,7 @@ import '../../core/app_services.dart';
 import '../../data/remote/catalog_repository.dart';
 import '../../domain/catalog.dart';
 import '../../shared/widgets/catalog_widgets.dart';
+import '../../shared/widgets/menu_photo.dart';
 import 'owner_view_model.dart';
 
 class OwnerListView extends StatefulWidget {
@@ -140,6 +141,10 @@ class _OwnerListViewState extends State<OwnerListView> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          if (item.imageUrl != null) ...[
+                            MenuPhoto(url: item.imageUrl, label: item.name),
+                            const SizedBox(height: 12),
+                          ],
                           Text(
                             item.name,
                             style: Theme.of(context).textTheme.titleLarge,
@@ -366,6 +371,41 @@ class _EditorViewState extends State<EditorView> {
                   ),
                   const SizedBox(height: 16),
                   if (table != 'categories') ...[
+                    MenuPhoto(
+                      url: _model.photoUrl,
+                      bytes: _model.photo?.bytes,
+                      label: 'Prévia da foto',
+                    ),
+                    Wrap(
+                      spacing: 8,
+                      children: [
+                        OutlinedButton.icon(
+                          onPressed: _model.busy
+                              ? null
+                              : () async {
+                                  final changed = await _model.selectPhoto();
+                                  if (mounted && changed)
+                                    setState(() => _dirty = true);
+                                },
+                          icon: const Icon(Icons.add_photo_alternate_outlined),
+                          label: const Text('Escolher foto'),
+                        ),
+                        if (_model.photo != null || _model.photoUrl != null)
+                          TextButton(
+                            onPressed: _model.busy
+                                ? null
+                                : () {
+                                    _model.removePhoto();
+                                    setState(() => _dirty = true);
+                                  },
+                            child: const Text('Remover foto'),
+                          ),
+                      ],
+                    ),
+                    const Text(
+                      'Foto opcional • JPG, PNG ou WebP • até 5 MB após otimização',
+                    ),
+                    const SizedBox(height: 16),
                     TextFormField(
                       controller: _description,
                       enabled: !_model.busy,
@@ -445,6 +485,10 @@ class _EditorViewState extends State<EditorView> {
                             }),
                     ),
                   if (_model.error != null) Notice(_model.error!, error: true),
+                  if (_model.busy && _model.status != null) ...[
+                    const LinearProgressIndicator(),
+                    Text(_model.status!),
+                  ],
                   const SizedBox(height: 20),
                   BusyButton(
                     label: 'Salvar',

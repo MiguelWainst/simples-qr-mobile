@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../domain/catalog.dart';
+import 'menu_photo.dart';
 
 class ContentWidth extends StatelessWidget {
   const ContentWidth({required this.child, super.key});
@@ -109,7 +110,12 @@ class ProductTile extends StatelessWidget {
     child: ListTile(
       contentPadding: const EdgeInsets.all(16),
       onTap: onTap,
-      leading: const Icon(Icons.restaurant_outlined),
+      leading: MenuPhoto(
+        url: product.imageUrl,
+        width: 56,
+        height: 56,
+        label: product.name,
+      ),
       title: Text(product.name),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,7 +148,12 @@ class RestaurantTile extends StatelessWidget {
   Widget build(BuildContext context) => Card(
     child: ListTile(
       contentPadding: const EdgeInsets.all(16),
-      leading: const Icon(Icons.storefront, size: 32),
+      leading: MenuPhoto(
+        url: restaurant.imageUrl,
+        width: 56,
+        height: 56,
+        label: restaurant.name,
+      ),
       title: Text(restaurant.name),
       subtitle: Text(
         restaurant.description.isEmpty

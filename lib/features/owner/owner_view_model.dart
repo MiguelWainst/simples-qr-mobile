@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' hide Category;
 
 import '../../core/app_services.dart';
 import '../../data/remote/catalog_repository.dart';
+import '../../data/remote/photo_repository.dart';
 import '../../domain/catalog.dart';
 import '../../domain/menu_address.dart';
 
@@ -60,9 +61,51 @@ class OwnerViewModel extends ChangeNotifier {
 }
 
 class EditorViewModel extends ChangeNotifier {
-  EditorViewModel(this.repository, this.args);
+  EditorViewModel(this.repository, this.args, {PhotoRepository? photos})
+    : photos = photos ?? PhotoRepository(repository.client);
   final CatalogRepository repository;
   final EditorArgs args;
+  final PhotoRepository photos;
+  SelectedPhoto? photo;
+  bool photoChanged = false;
+  String? _uploadedUrl, status;
+  String? get photoUrl => photoChanged
+      ? _uploadedUrl
+      : (args.table == 'restaurants'
+            ? args.restaurant?.imageUrl
+            : args.product?.imageUrl);
+
+  Future<bool> selectPhoto() async {
+    if (busy || _disposed) return false;
+    busy = true;
+    status = 'Escolhendo e preparando foto…';
+    error = null;
+    notifyListeners();
+    try {
+      final selected = await photos.pick().timeout(const Duration(seconds: 90));
+      if (_disposed || selected == null) return false;
+      photo = selected;
+      photoChanged = true;
+      _uploadedUrl = null;
+      return true;
+    } catch (e) {
+      error = friendlyError(e);
+      return false;
+    } finally {
+      busy = false;
+      status = null;
+      if (!_disposed) notifyListeners();
+    }
+  }
+
+  void removePhoto() {
+    if (busy) return;
+    photo = null;
+    photoChanged = true;
+    _uploadedUrl = null;
+    notifyListeners();
+  }
+
   String? _generatedAddress;
 
   String addressFor(String name) =>
@@ -143,6 +186,16 @@ class EditorViewModel extends ChangeNotifier {
             'updated_at': DateTime.now().toUtc().toIso8601String(),
           };
       }
+      if (photoChanged && args.table != 'categories') {
+        if (photo != null && _uploadedUrl == null) {
+          status = 'Enviando foto…';
+          if (!_disposed) notifyListeners();
+          _uploadedUrl = await photos.upload(photo!);
+        }
+        values['image_url'] = _uploadedUrl;
+      }
+      status = 'Salvando…';
+      if (!_disposed) notifyListeners();
       await repository.save(args.table, values, id: id);
       return true;
     } catch (e) {
