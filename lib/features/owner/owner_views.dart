@@ -247,7 +247,7 @@ class _EditorViewState extends State<EditorView> {
       _menuAccent = TextEditingController();
   late final EditorViewModel _model;
   _PromotionMode _promotion = _PromotionMode.none;
-  DateTime? _flashEndsAt, _pendingFlashEnd;
+  DateTime? _flashEndsAt;
   String? _category;
   bool _enabled = false, _isNew = false, _dirty = false, _leaving = false;
   @override
@@ -314,17 +314,8 @@ class _EditorViewState extends State<EditorView> {
     if (!_form.currentState!.validate()) {
       return;
     }
-    final minutes = int.tryParse(_flashMinutes.text.trim());
-    final DateTime? deadline;
-    if (_promotion != _PromotionMode.flash) {
-      deadline = null;
-    } else if (minutes == null) {
-      deadline = _flashEndsAt;
-    } else {
-      deadline = _pendingFlashEnd ??= DateTime.now().toUtc().add(
-        Duration(minutes: minutes),
-      );
-    }
+    final isFlash = _promotion == _PromotionMode.flash;
+    final minutes = isFlash ? int.tryParse(_flashMinutes.text.trim()) : null;
     final title = _menuTitle.text.trim();
     final ok = await _model.save(
       name: _name.text,
@@ -333,7 +324,8 @@ class _EditorViewState extends State<EditorView> {
       categoryId: _category,
       enabled: _enabled,
       salePrice: _promotion == _PromotionMode.none ? null : _salePrice.text,
-      flashEndsAt: deadline,
+      flashEndsAt: isFlash ? _flashEndsAt : null,
+      flashDuration: minutes == null ? null : Duration(minutes: minutes),
       isNew: _isNew,
       menuAccent: Rules.menuAccent(_menuAccent.text),
       menuTitle: title.isEmpty ? null : title,
@@ -539,7 +531,7 @@ class _EditorViewState extends State<EditorView> {
           controller: _flashMinutes,
           enabled: !_model.busy,
           keyboardType: TextInputType.number,
-          onChanged: (_) => _pendingFlashEnd = null,
+          onChanged: (_) => _model.resetFlashDeadline(),
           validator: (value) {
             final text = value?.trim() ?? '';
             if (text.isEmpty && endsAt != null) return null;
@@ -610,129 +602,133 @@ class _EditorViewState extends State<EditorView> {
                   setState(() => _dirty = true);
                 }
               },
-              child: ListView(
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24),
-                children: [
-                  TextFormField(
-                    controller: _name,
-                    enabled: !_model.busy,
-                    validator: (v) => Rules.name(
-                      v,
-                      min: table == 'restaurants' ? 2 : 1,
-                      max: table == 'categories' ? 80 : 120,
-                    ),
-                    decoration: const InputDecoration(
-                      labelText: 'Nome',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  if (table != 'categories') ...[
-                    _imageEditor(
-                      label: table == 'restaurants' ? 'Foto de capa' : 'Foto',
-                    ),
-                    const Text(
-                      'Foto opcional • JPG, PNG ou WebP • até 5 MB após otimização',
-                    ),
-                    const SizedBox(height: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
                     TextFormField(
-                      controller: _description,
+                      controller: _name,
                       enabled: !_model.busy,
-                      maxLines: 4,
-                      maxLength: 2000,
-                      decoration: InputDecoration(
-                        labelText: table == 'products'
-                            ? 'Descrição e ingredientes'
-                            : 'Descrição',
-                        border: const OutlineInputBorder(),
+                      validator: (v) => Rules.name(
+                        v,
+                        min: table == 'restaurants' ? 2 : 1,
+                        max: table == 'categories' ? 80 : 120,
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                  if (table == 'products') ...[
-                    DropdownButtonFormField<String>(
-                      initialValue:
-                          _model.categories.any((c) => c.id == _category)
-                          ? _category
-                          : null,
-                      isExpanded: true,
                       decoration: const InputDecoration(
-                        labelText: 'Categoria',
-                        border: OutlineInputBorder(),
-                      ),
-                      items: _model.categories
-                          .map(
-                            (c) => DropdownMenuItem(
-                              value: c.id,
-                              child: Text(c.name),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: _model.busy
-                          ? null
-                          : (v) => setState(() {
-                              _category = v;
-                              _dirty = true;
-                            }),
-                      validator: (v) =>
-                          v == null ? 'Escolha uma categoria.' : null,
-                    ),
-                    if (!_model.busy && _model.categories.isEmpty)
-                      const Notice(
-                        'Cadastre uma categoria antes de adicionar produtos.',
-                      ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _price,
-                      enabled: !_model.busy,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      validator: (v) => Rules.cents(v ?? '') == null
-                          ? 'Informe um preço válido. Exemplo: 25,90.'
-                          : null,
-                      decoration: const InputDecoration(
-                        labelText: 'Preço em reais',
-                        prefixText: 'R\$ ',
+                        labelText: 'Nome',
                         border: OutlineInputBorder(),
                       ),
                     ),
-                    ..._promotionFields(),
-                  ],
-                  if (table == 'restaurants') ..._brandingFields(),
-                  if (table != 'categories')
-                    SwitchListTile(
-                      title: Text(
-                        table == 'restaurants'
-                            ? 'Publicar cardápio'
-                            : 'Produto disponível',
+                    const SizedBox(height: 16),
+                    if (table != 'categories') ...[
+                      _imageEditor(
+                        label: table == 'restaurants' ? 'Foto de capa' : 'Foto',
                       ),
-                      value: _enabled,
-                      onChanged: _model.busy
-                          ? null
-                          : (v) => setState(() {
-                              _enabled = v;
-                              _dirty = true;
-                            }),
+                      const Text(
+                        'Foto opcional • JPG, PNG ou WebP • até 5 MB após otimização',
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _description,
+                        enabled: !_model.busy,
+                        maxLines: 4,
+                        maxLength: 2000,
+                        decoration: InputDecoration(
+                          labelText: table == 'products'
+                              ? 'Descrição e ingredientes'
+                              : 'Descrição',
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                    if (table == 'products') ...[
+                      DropdownButtonFormField<String>(
+                        initialValue:
+                            _model.categories.any((c) => c.id == _category)
+                            ? _category
+                            : null,
+                        isExpanded: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Categoria',
+                          border: OutlineInputBorder(),
+                        ),
+                        items: _model.categories
+                            .map(
+                              (c) => DropdownMenuItem(
+                                value: c.id,
+                                child: Text(c.name),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: _model.busy
+                            ? null
+                            : (v) => setState(() {
+                                _category = v;
+                                _dirty = true;
+                              }),
+                        validator: (v) =>
+                            v == null ? 'Escolha uma categoria.' : null,
+                      ),
+                      if (!_model.busy && _model.categories.isEmpty)
+                        const Notice(
+                          'Cadastre uma categoria antes de adicionar produtos.',
+                        ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _price,
+                        enabled: !_model.busy,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        validator: (v) => Rules.cents(v ?? '') == null
+                            ? 'Informe um preço válido. Exemplo: 25,90.'
+                            : null,
+                        decoration: const InputDecoration(
+                          labelText: 'Preço em reais',
+                          prefixText: 'R\$ ',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      ..._promotionFields(),
+                    ],
+                    if (table == 'restaurants') ..._brandingFields(),
+                    if (table != 'categories')
+                      SwitchListTile(
+                        title: Text(
+                          table == 'restaurants'
+                              ? 'Publicar cardápio'
+                              : 'Produto disponível',
+                        ),
+                        value: _enabled,
+                        onChanged: _model.busy
+                            ? null
+                            : (v) => setState(() {
+                                _enabled = v;
+                                _dirty = true;
+                              }),
+                      ),
+                    if (_model.error != null)
+                      Notice(_model.error!, error: true),
+                    if (_model.busy && _model.status != null) ...[
+                      const LinearProgressIndicator(),
+                      Text(_model.status!),
+                    ],
+                    const SizedBox(height: 20),
+                    BusyButton(
+                      label: 'Salvar',
+                      busy: _model.busy,
+                      onPressed: _save,
                     ),
-                  if (_model.error != null) Notice(_model.error!, error: true),
-                  if (_model.busy && _model.status != null) ...[
-                    const LinearProgressIndicator(),
-                    Text(_model.status!),
+                    if (_model.id != null)
+                      TextButton.icon(
+                        onPressed: _model.busy ? null : _delete,
+                        icon: const Icon(Icons.delete_outline),
+                        label: Text('Excluir $type'),
+                      ),
                   ],
-                  const SizedBox(height: 20),
-                  BusyButton(
-                    label: 'Salvar',
-                    busy: _model.busy,
-                    onPressed: _save,
-                  ),
-                  if (_model.id != null)
-                    TextButton.icon(
-                      onPressed: _model.busy ? null : _delete,
-                      icon: const Icon(Icons.delete_outline),
-                      label: Text('Excluir $type'),
-                    ),
-                ],
+                ),
               ),
             ),
           ),

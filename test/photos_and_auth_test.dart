@@ -80,6 +80,23 @@ void main() {
       model.removePhoto();
       expect(await save(), isTrue);
       expect(repository.saved?['image_url'], isNull);
+      expect(await model.selectPhoto(logo: true), isTrue);
+      expect(
+        await model.save(
+          name: 'Restaurante',
+          description: '',
+          price: '',
+          categoryId: null,
+          enabled: true,
+          menuAccent: '#852545',
+          menuTitle: 'Cardápio do dia',
+        ),
+        isTrue,
+      );
+      expect(repository.saved?['image_url'], isNull);
+      expect(repository.saved?['logo_url'], 'https://example.com/photo.jpg');
+      expect(repository.saved?['menu_accent'], '#852545');
+      expect(repository.saved?['menu_title'], 'Cardápio do dia');
       model.dispose();
       await client.dispose();
     },

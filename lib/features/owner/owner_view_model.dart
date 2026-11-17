@@ -130,6 +130,9 @@ class EditorViewModel extends ChangeNotifier {
   }
 
   String? _generatedAddress;
+  DateTime? _pendingFlashEnd;
+
+  void resetFlashDeadline() => _pendingFlashEnd = null;
 
   String addressFor(String name) =>
       args.restaurant?.slug ??
@@ -165,6 +168,7 @@ class EditorViewModel extends ChangeNotifier {
     required bool enabled,
     String? salePrice,
     DateTime? flashEndsAt,
+    Duration? flashDuration,
     bool isNew = false,
     String? menuAccent,
     String? menuTitle,
@@ -215,7 +219,10 @@ class EditorViewModel extends ChangeNotifier {
             throw const FormatException('Confira nome, categoria e preço.');
           }
           final saleCents = salePrice == null ? null : Rules.cents(salePrice);
-          if (salePrice != null && (saleCents == null || saleCents >= cents)) {
+          if ((salePrice != null &&
+                  (saleCents == null || saleCents >= cents)) ||
+              (flashDuration != null &&
+                  (saleCents == null || flashDuration <= Duration.zero))) {
             throw const FormatException(
               'Informe um preço promocional menor que o preço normal.',
             );
@@ -230,7 +237,8 @@ class EditorViewModel extends ChangeNotifier {
             'available': enabled,
             if (saleCents != args.product?.salePriceCents)
               'sale_price_cents': saleCents,
-            if (end != args.product?.flashEndsAt?.toUtc())
+            if (flashDuration == null &&
+                end != args.product?.flashEndsAt?.toUtc())
               'flash_ends_at': end?.toIso8601String(),
             if (isNew != (args.product?.isNew ?? false)) 'is_new': isNew,
             'updated_at': DateTime.now().toUtc().toIso8601String(),
@@ -241,6 +249,12 @@ class EditorViewModel extends ChangeNotifier {
       }
       if (args.table == 'restaurants') {
         await _saveImage(values, 'logo_url', _logo);
+      }
+      if (args.table == 'products' && flashDuration != null) {
+        final end = _pendingFlashEnd ??= DateTime.now().toUtc().add(
+          flashDuration,
+        );
+        values['flash_ends_at'] = end.toIso8601String();
       }
       status = 'Salvando…';
       if (!_disposed) notifyListeners();
