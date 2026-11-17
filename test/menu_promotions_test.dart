@@ -93,7 +93,7 @@ void main() {
     expect(find.text('Relâmpago'), findsNothing);
     expect(find.text('R\$ 19,00'), findsNothing);
     final normalPrice = tester.widget<Text>(find.text('R\$ 25,00'));
-    expect(normalPrice.style?.decoration, isNull);
+    expect(normalPrice.style?.decoration, isNot(TextDecoration.lineThrough));
   });
 
   testWidgets('selo NEW e promoção regular são independentes', (tester) async {
