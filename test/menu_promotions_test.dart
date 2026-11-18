@@ -105,18 +105,24 @@ void main() {
       'sale_price_cents': 1900,
       'is_new': true,
     });
-    Future<void> show(Product item, {Brightness mode = Brightness.light}) =>
-        tester.pumpWidget(
-          MaterialApp(
-            theme: ThemeData(brightness: mode),
-            home: Scaffold(
-              body: SizedBox(
-                width: 320,
-                child: ProductTile(product: item, onTap: () {}),
-              ),
+    Future<void> show(
+      Product item, {
+      Brightness mode = Brightness.light,
+    }) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData(brightness: mode),
+          home: Scaffold(
+            body: SizedBox(
+              width: 320,
+              child: ProductTile(product: item, onTap: () {}),
             ),
           ),
-        );
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
     await show(product);
     expect(find.text('NEW'), findsOneWidget);
     expect(tester.getSize(find.byType(NewProductBadge)), const Size.square(48));
