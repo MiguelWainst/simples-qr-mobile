@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
@@ -74,6 +75,12 @@ class _PriceLabelState extends State<PriceLabel> {
     );
     if (sale == null) return Text(product.price, style: priceStyle);
 
+    final dark = theme.brightness == Brightness.dark;
+    final offerText = dark ? const Color(0xFF7CF1A5) : const Color(0xFF086736);
+    final offerBackground = dark
+        ? const Color(0xFF123824)
+        : const Color(0xFFE4F8EB);
+    final salePrice = Product.formatPrice(sale);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -81,7 +88,7 @@ class _PriceLabelState extends State<PriceLabel> {
           Text(
             'Em promoção',
             style: theme.textTheme.labelMedium?.copyWith(
-              color: colors.primary,
+              color: offerText,
               fontWeight: FontWeight.w700,
             ),
           )
@@ -100,10 +107,24 @@ class _PriceLabelState extends State<PriceLabel> {
                 decoration: TextDecoration.lineThrough,
               ),
             ),
-            Text(
-              Product.formatPrice(sale),
-              semanticsLabel: 'Preço promocional ${Product.formatPrice(sale)}',
-              style: priceStyle?.copyWith(fontSize: 20),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: offerBackground,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                child: Text(
+                  salePrice,
+                  semanticsLabel: 'Preço promocional $salePrice',
+                  style: priceStyle?.copyWith(
+                    color: offerText,
+                    fontSize: 23,
+                    fontWeight: FontWeight.w900,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -116,27 +137,56 @@ class NewProductBadge extends StatelessWidget {
   const NewProductBadge({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return DecoratedBox(
-      decoration: ShapeDecoration(
-        color: colors.tertiaryContainer,
-        shape: const StadiumBorder(),
-      ),
+  Widget build(BuildContext context) => const SizedBox.square(
+    dimension: 48,
+    child: CustomPaint(
+      painter: _NewBadgePainter(),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-        child: Text(
-          'NEW',
-          semanticsLabel: 'Produto novo',
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: colors.onTertiaryContainer,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 0.8,
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            'NEW',
+            semanticsLabel: 'Produto novo',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -0.5,
+              height: 1,
+            ),
           ),
         ),
       ),
-    );
+    ),
+  );
+}
+
+class _NewBadgePainter extends CustomPainter {
+  const _NewBadgePainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const points = 24;
+    final center = size.center(Offset.zero);
+    final radius = size.shortestSide / 2;
+    final burst = Path();
+    for (var i = 0; i < points * 2; i++) {
+      final angle = -math.pi / 2 + i * math.pi / points;
+      final distance = i.isEven ? radius : radius * 0.67;
+      final x = center.dx + math.cos(angle) * distance;
+      final y = center.dy + math.sin(angle) * distance;
+      if (i == 0) {
+        burst.moveTo(x, y);
+      } else {
+        burst.lineTo(x, y);
+      }
+    }
+    canvas.drawPath(burst..close(), Paint()..color = const Color(0xFFDE2229));
   }
+
+  @override
+  bool shouldRepaint(_NewBadgePainter oldDelegate) => false;
 }
 
 class _FlashBadge extends StatefulWidget {
