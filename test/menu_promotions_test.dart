@@ -82,7 +82,9 @@ void main() {
     expect(find.text('00:02'), findsOneWidget);
     final oldPrice = tester.widget<Text>(find.text('R\$ 25,00'));
     expect(oldPrice.style?.decoration, TextDecoration.lineThrough);
-    expect(find.text('R\$ 19,00'), findsOneWidget);
+    final salePrice = tester.widget<Text>(find.text('R\$ 19,00'));
+    expect(salePrice.style?.color, const Color(0xFF086736));
+    expect(salePrice.style!.fontSize!, greaterThan(oldPrice.style!.fontSize!));
 
     now = now.add(const Duration(seconds: 1));
     await tester.pump(const Duration(seconds: 1));
@@ -94,6 +96,7 @@ void main() {
     expect(find.text('R\$ 19,00'), findsNothing);
     final normalPrice = tester.widget<Text>(find.text('R\$ 25,00'));
     expect(normalPrice.style?.decoration, isNot(TextDecoration.lineThrough));
+    expect(normalPrice.style?.color, isNot(salePrice.style?.color));
   });
 
   testWidgets('selo NEW e promoção regular são independentes', (tester) async {
@@ -102,18 +105,35 @@ void main() {
       'sale_price_cents': 1900,
       'is_new': true,
     });
-    Future<void> show(Product item) => tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: ProductTile(product: item, onTap: () {}),
+    Future<void> show(
+      Product item, {
+      Brightness mode = Brightness.light,
+    }) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData(brightness: mode),
+          home: Scaffold(
+            body: SizedBox(
+              width: 320,
+              child: ProductTile(product: item, onTap: () {}),
+            ),
+          ),
         ),
-      ),
-    );
+      );
+      await tester.pumpAndSettle();
+    }
+
     await show(product);
     expect(find.text('NEW'), findsOneWidget);
+    expect(tester.getSize(find.byType(NewProductBadge)), const Size.square(48));
     expect(find.text('Em promoção'), findsOneWidget);
-    await show(Product.fromMap({...product.toMap(), 'is_new': false}));
+    await show(
+      Product.fromMap({...product.toMap(), 'is_new': false}),
+      mode: Brightness.dark,
+    );
     expect(find.text('NEW'), findsNothing);
     expect(find.text('Em promoção'), findsOneWidget);
+    final salePrice = tester.widget<Text>(find.text('R\$ 19,00'));
+    expect(salePrice.style?.color, const Color(0xFF7CF1A5));
   });
 }
